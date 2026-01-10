@@ -1,0 +1,11 @@
+{
+  "name": "helpdesk-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "Pollyana Valverde",
+  "license": "ISC",
+  "type": "module"
+}

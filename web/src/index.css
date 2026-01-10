@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --default-font-family: "Lato", sans-serif;
+
+  --text-xxs: 0.625rem;
+}
+
+/*
+colors brand indigo
+blue-light = indigo-300
+blue-base = indigo-500
+blue-dark = indigo-800
+
+gray-100 = gray-900
+gray-200 = gray-800
+gray-300 = gray-500
+gray-400 = gray-400
+gray-500 = gray-200
+gray-600 = gray-100
+
+color feedback 
+danger = red-700
+open = pink-700
+progress = blue-700
+done = lime-700
+*/
