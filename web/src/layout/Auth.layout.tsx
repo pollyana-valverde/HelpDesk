@@ -10,7 +10,7 @@ export function AuthLayout() {
       style={{ backgroundImage: `url(${loginBg})` }}
     >
       <main className="h-full w-full sm:rounded-t-3xl md:max-w-1/2 md:rounded-tr-none bg-gray-100 py-8 px-6 flex flex-col items-center">
-        <header className="flex gap-3 mb-6 items-center">
+        <header className="flex gap-3 mb-6 items-center md:mb-8">
           <img src={logoDark} alt="Logo Dark" className="h-10 w-10" />
           <h1 className="text-2xl text-indigo-800 font-bold">HelpDesk</h1>
         </header>
