@@ -23,13 +23,13 @@ const navigate = useNavigate()
             required
             legend="E-mail"
             type="email"
-            placeholder="seu@email.com"
+            placeholder="example@email.com"
           />
           <Input
             required
             legend="Senha"
             type="password"
-            placeholder="********"
+            placeholder="Digite sua senha"
             helperText="Mínimo 6 dígitos"
           />
         </div>
