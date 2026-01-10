@@ -1,6 +1,10 @@
+import { useNavigate } from "react-router";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
-import { useNavigate } from "react-router";
 
 export function SignUp() {
 const navigate = useNavigate()

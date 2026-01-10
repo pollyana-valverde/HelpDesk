@@ -25,8 +25,8 @@ export function SignIn() {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      email: "valverdepolly@gmail",
-      password: "nn",
+      email: "polly@gmail.com",
+      password: "senha123",
     },
     resolver: zodResolver(signInSchema),
   });
@@ -80,7 +80,6 @@ export function SignIn() {
               />
             )}
           />
-            
         </div>
 
         <Button isLoading={false} type="submit">
