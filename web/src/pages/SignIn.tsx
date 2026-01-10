@@ -31,7 +31,7 @@ export function SignIn() {
           />
         </div>
 
-        <Button />
+        <Button isLoading={false}>Entrar</Button>
       </form>
 
       <div className="rounded-2xl border border-gray-200 p-6 flex flex-col gap-5">
