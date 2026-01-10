@@ -1,16 +1,14 @@
 import { Outlet } from "react-router";
 
-import { Sidebar } from "../components/Sidebar";
+import { Navigation } from "../components/Navigation";
 
-export function AppLayout (){
-    return(
-        <div>
-            <main>
-                <Sidebar />
-                <div>
-                    <Outlet />
-                </div>
-            </main>
-        </div>
-    )
+export function AppLayout() {
+  return (
+    <main className="w-screen h-screen bg-gray-900 md:pt-8 md:flex ">
+      <Navigation />
+      <div className="bg-gray-100 h-full flex-1 sm:rounded-t-3xl md:rounded-tr-none py-7 px-6 md:px-12 md:py-13">
+        <Outlet />
+      </div>
+    </main>
+  );
 }

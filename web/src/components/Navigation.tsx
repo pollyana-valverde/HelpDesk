@@ -1,4 +1,4 @@
-export function Sidebar (){
+export function Navigation (){
     return(
         <div>
             Sidebar
