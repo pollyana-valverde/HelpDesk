@@ -1,5 +1,6 @@
 // import {ClipboardList} from "lucide-react";
+import { Routes } from "./routes";
 
 export function App() {
-  return <div>Hello, World!</div>;
+  return <Routes />;
 }
