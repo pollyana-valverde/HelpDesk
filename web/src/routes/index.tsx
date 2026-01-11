@@ -3,7 +3,7 @@ import { BrowserRouter } from "react-router";
 import { AuthRoutes } from "./Auth.routes";
 import { AdminRoutes } from "./Admin.routes";
 
-const session = "admin"; // Simulating a session value
+export const session = "admin"; // Simulating a session value
 
 export function Routes() {
   function Route() {
