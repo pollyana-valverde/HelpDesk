@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import { session } from "../routes";
 
 import { classMerge } from "../utils/classMerge";
@@ -33,28 +35,28 @@ const menuLinks: LinkData[] = [
   },
   {
     label: "Técnicos",
-    path: "/",
+    path: "/experts",
     icon: <Users className="w-5 h-5" />,
     role: "admin",
   },
   {
     label: "Clientes",
-    path: "/",
+    path: "/clients",
     icon: <BriefcaseBusiness className="w-5 h-5" />,
     role: "admin",
   },
   {
     label: "Serviços",
-    path: "/",
+    path: "/services",
     icon: <Wrench className="w-5 h-5" />,
     role: "admin",
   },
 ];
 
 export function Navigation() {
-  const [openMenu, setOpenMenu] = useState(true);
+  const [openMenu, setOpenMenu] = useState(false);
   const [openUser, setOpenUser] = useState(false);
-  const [activeLink, setActiveLink] = useState("Chamados");
+  const location = useLocation();
 
   const renderNavLinks = menuLinks
     .filter((link) => link.role === session)
@@ -62,8 +64,7 @@ export function Navigation() {
       <NavLink
         key={link.label}
         links={link}
-        variant={link.label === activeLink ? "active" : "default"}
-        onClick={() => setActiveLink(link.label)}
+        variant={location.pathname === link.path ? "active" : "default"}
       />
     ));
 

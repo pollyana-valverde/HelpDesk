@@ -1,9 +1,8 @@
-import { Tag } from "../components/Tag"
 
 export function Calls() {
     return (
         <div>
-            <Tag label="Label" variant="open" />
+            <h1 className="text-indigo-800 text-2xl font-bold md:text-3xl">Chamados</h1>
         </div>
     )
 }
