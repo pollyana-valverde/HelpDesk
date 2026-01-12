@@ -14,16 +14,67 @@ enum UserRole {
   expert
 }
 
+enum TicketStatus {
+  open
+  in_progress
+  closed
+}
+
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(client)
 
-  role UserRole @default(client)
+  // Horários de disponibilidade para o Técnico (EXPERT)
+  availableHours String[] 
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação: Cliente que criou os chamados
+  ticketsCreated Ticket[] @relation("ClientTickets")
+
+  // Relação: Técnico responsável pelos chamados
+  ticketsAssigned Ticket[] @relation("ExpertTickets")
 
   @@map("users")
+}
+
+model Service {
+  id     String  @id @default(uuid())
+  name   String
+  price  Decimal
+  // Para o soft delete
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação: Em quais chamados este serviço está
+  tickets Ticket[]
+
+  @@map("services")
+}
+
+model Ticket {
+  id     String       @id @default(uuid())
+  status TicketStatus @default(open)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação com o Cliente que criou
+  clientId String
+  client   User   @relation("ClientTickets", fields: [clientId], references: [id], onDelete: Cascade)
+
+  // Relação com o Técnico responsável
+  expertId String
+  expert   User   @relation("ExpertTickets", fields: [expertId], references: [id])
+
+  // Relação muitos-para-muitos com os Serviços
+  services Service[]
+
+  @@map("tickets")
 }
