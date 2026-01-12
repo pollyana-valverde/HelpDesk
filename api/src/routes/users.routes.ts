@@ -10,5 +10,8 @@ const usersController = new UsersController();
 
 usersRoutes.post("/", usersController.create);
 usersRoutes.get("/", ensureAuthenticated, verifyAuthorization(["admin"]), usersController.index);
+usersRoutes.put("/:id", ensureAuthenticated, verifyAuthorization(["admin", "client"]), usersController.update);
+usersRoutes.patch("/:id/password", ensureAuthenticated, verifyAuthorization([ "client"]), usersController.updatePassword);
+usersRoutes.delete("/:id", ensureAuthenticated, verifyAuthorization(["admin", "client"]), usersController.delete);
 
 export { usersRoutes };
