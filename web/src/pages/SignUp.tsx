@@ -3,11 +3,10 @@ import { useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { set, z, ZodError } from "zod";
+import { z, ZodError } from "zod";
 import { AxiosError } from "axios";
 
 import { api } from "../services/api";
-import { useAuth } from "../hooks/useAuth";
 
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
@@ -25,7 +24,6 @@ const signInSchema = z.object({
 });
 
 export function SignUp() {
-  const auth = useAuth();
   const navigate = useNavigate();
 
   const [stateError, setStateError] = useState<{ message: string } | null>(
