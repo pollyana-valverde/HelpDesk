@@ -67,6 +67,53 @@ class ExpertController {
 
     return response.json(experts);
   }
+
+  async update(request: Request, response: Response) {
+    const paramsSchema = z.object({
+      id: z.uuid("ID inválido"),
+    });
+
+    const bodySchema = z.object({
+      name: z.string().trim().min(3, "Informe um nome válido").optional(),
+      email: z.email("Email inválido").trim().toLowerCase().optional(),
+      availableHours: z.array(z.string("Horário inválido")).optional(),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+    const { name, email, availableHours } = bodySchema.parse(request.body);
+
+    const expert = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!expert || expert.role !== UserRole.expert) {
+      throw new AppError("Técnico não encontrado", 404);
+    }
+
+    if (email) {
+      const userWithSameEmail = await prisma.user.findFirst({
+        where: { email },
+      });
+
+      if (userWithSameEmail && userWithSameEmail.id !== id) {
+        throw new AppError(
+          "Já existe um usuário cadastrado com esse email",
+          409
+        );
+      }
+    }
+
+    await prisma.user.update({
+      where: { id },
+      data: {
+        name,
+        email,
+        availableHours,
+      },
+    });
+
+    return response.json({ message: "Técnico atualizado com sucesso" });
+  }
 }
 
 export { ExpertController };

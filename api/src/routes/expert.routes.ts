@@ -8,5 +8,6 @@ const expertController = new ExpertController();
 
 expertRoutes.post("/", verifyAuthorization(["admin"]), expertController.create);
 expertRoutes.get("/", verifyAuthorization(["admin"]), expertController.index);
+expertRoutes.put("/:id", verifyAuthorization(["admin"]), expertController.update);
 
 export { expertRoutes };
