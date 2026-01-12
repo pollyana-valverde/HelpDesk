@@ -10,5 +10,6 @@ servicesRoutes.use(verifyAuthorization(["admin"]));
 
 servicesRoutes.post("/", servicesController.create);
 servicesRoutes.get("/", servicesController.index);
+servicesRoutes.put("/:id", servicesController.update);
 
 export { servicesRoutes };
