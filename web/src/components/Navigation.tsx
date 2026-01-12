@@ -3,18 +3,10 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 import { classMerge } from "../utils/classMerge";
+import { NAVLINKS } from "../utils/navLinks";
 
-import { NavLink, type LinkData } from "./NavLink";
-import {
-  Menu,
-  X,
-  LogOut,
-  CircleUser,
-  ClipboardList,
-  Users,
-  BriefcaseBusiness,
-  Wrench,
-} from "lucide-react";
+import { NavLink } from "./NavLink";
+import { Menu, X, LogOut, CircleUser } from "lucide-react";
 
 import logoLight from "../assets/Logo_IconLight.svg";
 
@@ -25,49 +17,22 @@ const variants = {
   },
 };
 
-const menuLinks: LinkData[] = [
-  {
-    label: "Chamados",
-    path: "/",
-    icon: <ClipboardList className="w-5 h-5" />,
-    role: "admin",
-  },
-  {
-    label: "Técnicos",
-    path: "/experts",
-    icon: <Users className="w-5 h-5" />,
-    role: "admin",
-  },
-  {
-    label: "Clientes",
-    path: "/clients",
-    icon: <BriefcaseBusiness className="w-5 h-5" />,
-    role: "admin",
-  },
-  {
-    label: "Serviços",
-    path: "/services",
-    icon: <Wrench className="w-5 h-5" />,
-    role: "admin",
-  },
-];
-
 export function Navigation() {
   const [openMenu, setOpenMenu] = useState(false);
   const [openUser, setOpenUser] = useState(false);
 
-  const {session} = useAuth();
+  const { session, logout } = useAuth();
   const location = useLocation();
 
-  const renderNavLinks = menuLinks
-    .filter((link) => link.role === session?.user?.role)
-    .map((link) => (
-      <NavLink
-        key={link.label}
-        links={link}
-        variant={location.pathname === link.path ? "active" : "default"}
-      />
-    ));
+  const renderNavLinks = NAVLINKS.filter(
+    (link) => link.role === session?.user?.role
+  ).map((link) => (
+    <NavLink
+      key={link.label}
+      links={link}
+      variant={location.pathname === link.path ? "active" : "default"}
+    />
+  ));
 
   return (
     <div className="w-full relative flex md:flex-col items-center p-6 md:py-5 md:px-4 gap-4 md:gap-2 md:max-w-50 md:items-start ">
@@ -108,11 +73,11 @@ export function Navigation() {
         onClick={() => setOpenUser(!openUser)}
       >
         <h1 className="text-gray-100 text-sm uppercase bg-indigo-800 h-10 w-10 rounded-full flex items-center justify-center">
-          Pv
+          {session?.user.name.split(" ")[0].split("")[0]}{session?.user.name.split(" ")[1].split("")[0]}
         </h1>
         <div className="hidden md:flex md:flex-col">
-          <h2 className="text-sm text-gray-100">Usuário Adm</h2>
-          <p className="text-xs text-gray-400">user.adm@text.com</p>
+          <h2 className="text-sm text-gray-100">{session?.user?.name}</h2>
+          <p className="text-xs text-gray-400">{session?.user?.email}</p>
         </div>
       </div>
 
@@ -129,7 +94,10 @@ export function Navigation() {
             <a className="text-gray-100 flex gap-2 h-10 items-center cursor-pointer">
               <CircleUser className="w-5 h-5" /> Perfil
             </a>
-            <a className="text-red-600 flex gap-2 h-10 items-center cursor-pointer">
+            <a
+              className="text-red-600 flex gap-2 h-10 items-center cursor-pointer"
+              onClick={logout}
+            >
               <LogOut className="w-5 h-5" /> Sair
             </a>
           </div>

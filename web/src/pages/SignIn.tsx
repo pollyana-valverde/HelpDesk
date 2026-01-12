@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { set, z, ZodError } from "zod";
+import { z, ZodError } from "zod";
 import { AxiosError } from "axios";
 
 import { api } from "../services/api";
@@ -36,8 +36,8 @@ export function SignIn() {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "polly@gmail.com",
+      password: "senha123",
     },
     resolver: zodResolver(signInSchema),
   });
