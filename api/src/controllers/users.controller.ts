@@ -38,6 +38,19 @@ class UsersController {
 
     return response.status(201).json({ message: "Usuário criado com sucesso" });
   }
+
+  async index(request: Request, response: Response) {
+    const users = await prisma.user.findMany({
+      where: { role: UserRole.client },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+
+    return response.json(users);
+  }
 }
 
 export { UsersController };
