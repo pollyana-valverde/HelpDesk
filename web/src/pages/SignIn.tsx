@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+
+import { set, z, ZodError } from "zod";
+import { AxiosError } from "axios";
+
+import { api } from "../services/api";
+import { useAuth } from "../hooks/useAuth";
 
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
@@ -12,12 +18,17 @@ type FormData = {
 };
 
 const signInSchema = z.object({
-  email: z.email("Email ou senha inválidos"),
+  email: z.email("Email inválido").trim().min(1, "Informe o e-mail"),
   password: z.string().trim().min(1, "Informe a senha"),
 });
 
 export function SignIn() {
+  const auth = useAuth();
   const navigate = useNavigate();
+
+  const [stateError, setStateError] = useState<{ message: string } | null>(
+    null
+  );
 
   const {
     control,
@@ -25,14 +36,36 @@ export function SignIn() {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      email: "polly@gmail.com",
-      password: "senha123",
+      email: "",
+      password: "",
     },
     resolver: zodResolver(signInSchema),
   });
 
-  function handleSignIn(data: FormData) {
-    console.log(data);
+  async function handleSignIn(data: FormData) {
+    try {
+      const response = await api.post("/sessions", data);
+
+      auth.login(response.data);
+
+      setStateError(null);
+    } catch (error) {
+      console.log(error);
+
+      if (error instanceof ZodError) {
+        const errors = error.issues.map((err) => err.message).join("\n");
+
+        return setStateError({ message: errors });
+      }
+
+      if (error instanceof AxiosError) {
+        return setStateError({ message: error?.response?.data.message });
+      }
+
+      return setStateError({
+        message: "Erro ao fazer login. Tente novamente.",
+      });
+    }
   }
 
   return (
@@ -81,6 +114,12 @@ export function SignIn() {
             )}
           />
         </div>
+
+        {stateError && (
+          <p className="text-sm text-red-600 text-center ">
+            {stateError?.message}
+          </p>
+        )}
 
         <Button isLoading={false} type="submit">
           Entrar

@@ -1,13 +1,15 @@
 import { BrowserRouter } from "react-router";
 
+import { useAuth } from "../hooks/useAuth";
+
 import { AuthRoutes } from "./Auth.routes";
 import { AdminRoutes } from "./Admin.routes";
 
-export const session = "admin"; // Simulating a session value
-
 export function Routes() {
+const { session } = useAuth();
+
   function Route() {
-    switch (session) {
+    switch (session?.user.role) {
       case "admin":
         return <AdminRoutes />;
       // case "expert":

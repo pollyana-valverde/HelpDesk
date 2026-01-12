@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-
-import { session } from "../routes";
+import { useAuth } from "../hooks/useAuth";
 
 import { classMerge } from "../utils/classMerge";
 
@@ -56,10 +55,12 @@ const menuLinks: LinkData[] = [
 export function Navigation() {
   const [openMenu, setOpenMenu] = useState(false);
   const [openUser, setOpenUser] = useState(false);
+
+  const {session} = useAuth();
   const location = useLocation();
 
   const renderNavLinks = menuLinks
-    .filter((link) => link.role === session)
+    .filter((link) => link.role === session?.user?.role)
     .map((link) => (
       <NavLink
         key={link.label}

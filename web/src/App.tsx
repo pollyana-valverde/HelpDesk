@@ -1,6 +1,10 @@
-// import {ClipboardList} from "lucide-react";
+import { AuthProvider } from "./contexts/Auth.context";
 import { Routes } from "./routes";
 
 export function App() {
-  return <Routes />;
+  return (
+    <AuthProvider>
+      <Routes />
+    </AuthProvider>
+  );
 }
