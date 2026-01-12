@@ -60,6 +60,8 @@ model Service {
 
 model Ticket {
   id     String       @id @default(uuid())
+  title  String
+  description String
   status TicketStatus @default(open)
 
   createdAt DateTime @default(now())
