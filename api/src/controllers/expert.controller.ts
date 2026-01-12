@@ -53,6 +53,20 @@ class ExpertController {
 
     return response.status(201).json({ message: "Técnico criado com sucesso" });
   }
+
+  async index(request: Request, response: Response) {
+    const experts = await prisma.user.findMany({
+      where: { role: UserRole.expert },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        availableHours: true,
+      },
+    });
+
+    return response.json(experts);
+  }
 }
 
 export { ExpertController };
