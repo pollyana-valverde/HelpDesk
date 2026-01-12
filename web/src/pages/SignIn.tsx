@@ -36,8 +36,8 @@ export function SignIn() {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      email: "polly@gmail.com",
-      password: "senha123",
+      email: "",
+      password: "",
     },
     resolver: zodResolver(signInSchema),
   });

@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+
+import { set, z, ZodError } from "zod";
+import { AxiosError } from "axios";
+
+import { api } from "../services/api";
+import { useAuth } from "../hooks/useAuth";
 
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
@@ -19,7 +25,14 @@ const signInSchema = z.object({
 });
 
 export function SignUp() {
+  const auth = useAuth();
   const navigate = useNavigate();
+
+  const [stateError, setStateError] = useState<{ message: string } | null>(
+    null
+  );
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -34,8 +47,36 @@ export function SignUp() {
     resolver: zodResolver(signInSchema),
   });
 
-  function handleSignUp(data: FormData) {
-    console.log(data);
+  async function handleSignUp(data: FormData) {
+    try {
+      setIsLoading(true);
+
+      await api.post("/users", data);
+
+      if (
+        confirm(
+          "Cadastro realizado com sucesso! Deseja ir para a tela de login?"
+        )
+      ) {
+        navigate("/");
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const errors = error.issues.map((err) => err.message).join("\n");
+
+        return setStateError({ message: errors });
+      }
+
+      if (error instanceof AxiosError) {
+        return setStateError({ message: error?.response?.data.message });
+      }
+
+      return setStateError({
+        message: "Erro ao fazer cadastro. Tente novamente.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -100,7 +141,15 @@ export function SignUp() {
           />
         </div>
 
-        <Button isLoading={false} type="submit">Cadastrar</Button>
+        {stateError && (
+          <p className="text-sm text-red-600 text-center ">
+            {stateError?.message}
+          </p>
+        )}
+
+        <Button isLoading={isLoading} type="submit">
+          Cadastrar
+        </Button>
       </form>
 
       <div className="rounded-2xl border border-gray-200 p-6 flex flex-col gap-5 md:p-7 md:gap-6">
@@ -109,11 +158,7 @@ export function SignUp() {
           <p className="text-gray-500 text-sm">Entre agora mesmo</p>
         </div>
 
-        <Button
-          isLoading={false}
-          color="secondary"
-          onClick={() => navigate("/")}
-        >
+        <Button color="secondary" onClick={() => navigate("/")}>
           Acessar conta
         </Button>
       </div>
