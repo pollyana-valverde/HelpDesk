@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import { prisma } from "../database/prisma.js";
-import { TicketStatus } from "../../generated/prisma/enums.js";
 
 import { z } from "zod";
 import { AppError } from "../utils/AppError.js";
-import { is } from "zod/locales";
 
 class ServicesController {
     async create(request: Request, response: Response) {
@@ -35,6 +33,12 @@ class ServicesController {
         });
 
         return response.status(201).json(service);
+    }
+
+    async index(request: Request, response: Response) {
+        const services = await prisma.service.findMany();
+
+        return response.status(200).json(services);
     }
 }
 
