@@ -1,9 +1,10 @@
 import { Router } from "express";
 
 import { usersRoutes } from "./users.routes.js";
-import { sessionRoutes } from "./session.routes.js";
-import { callsRoutes } from "./calls.routes.js";
 import { expertRoutes } from "./expert.routes.js";
+import { sessionRoutes } from "./session.routes.js";
+import { ticketsRoutes } from "./tickets.routes.js";
+import { servicesRoutes } from "./services.routes.js";
 
 import { ensureAuthenticated } from "../middlewares/ensure-authenticated.js";
 
@@ -17,6 +18,7 @@ routes.use("/sessions", sessionRoutes);
 routes.use(ensureAuthenticated);
 
 routes.use("/experts", expertRoutes);
-routes.use("/calls", callsRoutes);
+routes.use("/tickets", ticketsRoutes);
+routes.use("/services", servicesRoutes);
 
 export { routes };
