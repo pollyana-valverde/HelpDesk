@@ -114,6 +114,42 @@ class ExpertController {
 
     return response.json({ message: "Técnico atualizado com sucesso" });
   }
+
+  async updatePassword(request: Request, response: Response) {
+    const paramsSchema = z.object({
+      id: z.uuid("ID inválido"),
+    });
+
+    const bodySchema = z.object({
+      password: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+    const { password } = bodySchema.parse(request.body);
+
+    const expert = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!expert || expert.role !== UserRole.expert) {
+      throw new AppError("Técnico não encontrado", 404);
+    }
+
+    if (request.user?.id !== id) {
+      throw new AppError("Você só pode alterar sua própria senha", 403);
+    }
+
+    const hashedPassword = await hash(password, 10);
+
+    await prisma.user.update({
+      where: { id },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    return response.json({ message: "Senha atualizada com sucesso" });
+  }
 }
 
 export { ExpertController };
