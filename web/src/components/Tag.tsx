@@ -3,14 +3,14 @@ import { classMerge } from "../utils/classMerge";
 import { X, CircleHelp, Clock2, CircleCheck, CircleAlert } from "lucide-react";
 
 type Props = React.ComponentProps<"span"> & {
-  label: string;
+  label: string | Array<string | number>;
   variant?:
     | "default"
     | "selected"
     | "disabled"
     | "open"
-    | "progress"
-    | "done"
+    | "in_progress"
+    | "closed"
     | "danger";
 };
 
@@ -21,8 +21,8 @@ const variants = {
     selected: "bg-indigo-500 text-gray-100 cursor-pointer",
     disabled: "border border-gray-300 text-gray-400 cursor-not-allowed",
     open: "text-pink-700 bg-pink-200",
-    progress: "text-blue-700 bg-blue-200",
-    done: "text-lime-700 bg-lime-200",
+    in_progress: "text-blue-700 bg-blue-200",
+    closed: "text-lime-700 bg-lime-200",
     danger: "text-red-700 bg-red-200",
   },
 };
@@ -38,8 +38,8 @@ export function Tag({ label, variant = "default", className, ...rest }: Props) {
       {...rest}
     >
       {variant === "open" && <CircleHelp className="w-4 h-4" />}
-      {variant === "progress" && <Clock2 className="w-4 h-4" />}
-      {variant === "done" && <CircleCheck className="w-4 h-4" />}
+      {variant === "in_progress" && <Clock2 className="w-4 h-4" />}
+      {variant === "closed" && <CircleCheck className="w-4 h-4" />}
       {variant === "danger" && <CircleAlert className="w-4 h-4" />}
       {label}
       {variant === "selected" && <X className="w-3.5 h-3.5" />}

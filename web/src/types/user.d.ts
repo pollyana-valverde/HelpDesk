@@ -7,6 +7,7 @@ type UserAPIResponse = {
     name: string;
     email: string;
     password?: string;
+    availableHours: string[] | null;
     role: UserAPIRole
   };
 };

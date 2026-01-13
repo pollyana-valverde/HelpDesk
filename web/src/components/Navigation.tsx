@@ -6,6 +6,7 @@ import { classMerge } from "../utils/classMerge";
 import { NAVLINKS } from "../utils/navLinks";
 
 import { NavLink } from "./NavLink";
+import { ProfileIcon } from "./ProfileIcon";
 import { Menu, X, LogOut, CircleUser } from "lucide-react";
 
 import logoLight from "../assets/Logo_IconLight.svg";
@@ -72,9 +73,8 @@ export function Navigation() {
         className=" flex items-center justify-center cursor-pointer gap-3"
         onClick={() => setOpenUser(!openUser)}
       >
-        <h1 className="text-gray-100 text-sm uppercase bg-indigo-800 h-10 w-10 rounded-full flex items-center justify-center">
-          {session?.user.name.split(" ")[0].split("")[0]}{session?.user.name.split(" ")[1].split("")[0]}
-        </h1>
+        <ProfileIcon username={session?.user?.name} />
+
         <div className="hidden md:flex md:flex-col">
           <h2 className="text-sm text-gray-100">{session?.user?.name}</h2>
           <p className="text-xs text-gray-400">{session?.user?.email}</p>
