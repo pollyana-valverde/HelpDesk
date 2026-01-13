@@ -51,16 +51,16 @@ export function Tickets() {
 
   return (
     <div className="grid gap-6">
-      <h1 className="text-indigo-800 text-2xl font-bold md:text-3xl">
-        Chamados
-      </h1>
+      <h1 className="text-indigo-800 text-2xl font-bold">Chamados</h1>
       <Table.Root>
         <Table.Head>
           {TABLE_HEADERS.map((header) => (
             <th
               key={header.label}
               className={classMerge(
-                !header.inResponsive && "hidden lg:table-cell",
+                header.inResponsive
+                  ? "table-cell w-[29%] lg:w-auto"
+                  : "hidden lg:table-cell",
                 "px-3 truncate"
               )}
             >
@@ -100,14 +100,18 @@ export function Tickets() {
                 R${formatCurrency(ticket.totalPrice)}
               </td>
 
-              <td className="px-3 hidden lg:table-cell truncate">
-                <ProfileIcon username={ticket.client.name} variant="small" />
-                <h2 className="text-sm">{ticket.client.name}</h2>
+              <td className="px-3 truncate lg:table-cell hidden">
+                <div className="flex gap-2">
+                  <ProfileIcon username={ticket.client.name} variant="small" />
+                  <h2 className="text-sm">{ticket.client.name}</h2>
+                </div>
               </td>
 
-              <td className="px-3 text-sm hidden lg:table-cell truncate">
-                <ProfileIcon username={ticket.expert.name} variant="small" />
-                <h2>{ticket.expert.name}</h2>
+              <td className="px-3 hidden truncate lg:table-cell">
+                <div className="flex gap-2">
+                  <ProfileIcon username={ticket.expert.name} variant="small" />
+                  <h2 className="text-sm">{ticket.expert.name}</h2>
+                </div>
               </td>
 
               <td className="px-3 truncate">

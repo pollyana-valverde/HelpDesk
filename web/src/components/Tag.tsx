@@ -3,7 +3,7 @@ import { classMerge } from "../utils/classMerge";
 import { X, CircleHelp, Clock2, CircleCheck, CircleAlert } from "lucide-react";
 
 type Props = React.ComponentProps<"span"> & {
-  label: string | Array<string | number>;
+  label?: string | number;
   variant?:
     | "default"
     | "selected"
