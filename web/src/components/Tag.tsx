@@ -3,7 +3,6 @@ import { classMerge } from "../utils/classMerge";
 import { X, CircleHelp, Clock2, CircleCheck, CircleAlert } from "lucide-react";
 
 type Props = React.ComponentProps<"span"> & {
-  label?: string | number;
   variant?:
     | "default"
     | "selected"
@@ -27,11 +26,11 @@ const variants = {
   },
 };
 
-export function Tag({ label, variant = "default", className, ...rest }: Props) {
+export function Tag({ children, variant = "default", className, ...rest }: Props) {
   return (
     <span
       className={classMerge(
-        "rounded-full px-3 h-7 text-sm w-fit flex items-center justify-center gap-1.5 transition ease-linear",
+        "rounded-full px-1.5 h-7 text-sm w-fit flex items-center justify-center gap-1.5 transition ease-linear",
         variants.tag[variant],
         className
       )}
@@ -41,7 +40,7 @@ export function Tag({ label, variant = "default", className, ...rest }: Props) {
       {variant === "in_progress" && <Clock2 className="w-4 h-4" />}
       {variant === "closed" && <CircleCheck className="w-4 h-4" />}
       {variant === "danger" && <CircleAlert className="w-4 h-4" />}
-      {label}
+      {children}
       {variant === "selected" && <X className="w-3.5 h-3.5" />}
     </span>
   );

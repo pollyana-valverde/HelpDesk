@@ -119,7 +119,9 @@ export function Tickets() {
               </Table.Cell>
 
               <Table.Cell>
-                <Tag variant={ticket.status} label={ticket.status} />
+                <Tag variant={ticket.status} >
+                    <h2 className="hidden lg:flex mr-1">{ticket.status.replace("_", " ")}</h2>
+                </Tag>
               </Table.Cell>
 
               <Table.Cell>
