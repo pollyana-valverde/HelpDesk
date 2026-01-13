@@ -48,9 +48,9 @@ class TicketsController {
         },
       },
       include: {
-        client: {select: { name: true, email: true }},
-        expert: {select: { name: true, email: true }},
-        services: {select: { name: true, price: true }},
+        client: { select: { name: true, email: true } },
+        expert: { select: { name: true, email: true } },
+        services: { select: { name: true, price: true } },
       },
     });
 
@@ -60,9 +60,9 @@ class TicketsController {
   async index(request: Request, response: Response) {
     const tickets = await prisma.ticket.findMany({
       include: {
-        client: {select: { name: true, email: true }},
-        expert: {select: { name: true, email: true }},
-        services: {select: { name: true, price: true }},
+        client: { select: { name: true, email: true } },
+        expert: { select: { name: true, email: true } },
+        services: { select: { name: true, price: true } },
       },
     });
 
@@ -75,8 +75,8 @@ class TicketsController {
     const tickets = await prisma.ticket.findMany({
       where: { clientId },
       include: {
-        expert: {select: { name: true, email: true }},
-        services: {select: { name: true, price: true }},
+        expert: { select: { name: true, email: true } },
+        services: { select: { name: true, price: true } },
       },
     });
 
@@ -93,16 +93,175 @@ class TicketsController {
     const tickets = await prisma.ticket.findMany({
       where: { expertId },
       include: {
-        client: {select: { name: true, email: true }},
-        services: {select: { name: true, price: true }},
+        client: { select: { name: true, email: true } },
+        services: { select: { name: true, price: true } },
       },
     });
 
-     if (tickets.length === 0) {
+    if (tickets.length === 0) {
       throw new AppError("Nenhum chamado encontrado.", 404);
     }
 
     return response.json(tickets);
+  }
+
+  async updateStatus(request: Request, response: Response) {
+    const paramsSchema = z.object({
+      id: z.uuid("ID do chamado inválido"),
+    });
+
+    const bodySchema = z.object({
+      status: z.enum(TicketStatus, "Status inválido"),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+    const { status } = bodySchema.parse(request.body);
+
+    const ticket = await prisma.ticket.findUnique({ where: { id } });
+
+    if (!ticket) {
+      throw new AppError("Chamado não encontrado.", 404);
+    }
+
+    if (ticket.status === status) {
+      throw new AppError(`Ticket is already '${status}'.`, 400);
+    }
+
+    const updatedTicket = await prisma.ticket.update({
+      where: { id },
+      data: { status },
+    });
+
+    return response.json(updatedTicket);
+  }
+
+  async additionalServices(request: Request, response: Response) {
+    const paramsSchema = z.object({
+      id: z.uuid("ID do chamado inválido"),
+    });
+
+    const bodySchema = z.object({
+      serviceIds: z.array(z.uuid("ID de serviço inválido").trim()),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+    const { serviceIds } = bodySchema.parse(request.body);
+
+    const ticket = await prisma.ticket.findUnique({ where: { id } });
+
+    if (!ticket) {
+      throw new AppError("Chamado não encontrado.", 404);
+    }
+
+    if (ticket.status === TicketStatus.closed) {
+      throw new AppError("Chamados encerrados não podem ser atualizados.", 400);
+    }
+
+    if (!serviceIds || serviceIds.length === 0) {
+      throw new AppError("Nenhum serviço fornecido para adicionar.", 400);
+    }
+
+    const existingServices = await prisma.ticket.findUnique({
+      where: { id },
+      include: {
+        services: {
+          where: {
+            id: { in: serviceIds },
+          },
+        },
+      },
+    });
+
+    if (existingServices) {
+      throw new AppError(
+        "O serviço fornecido já está associado ao chamado.",
+        400
+      );
+    }
+
+    const servicesCount = await prisma.service.count({
+      where: {
+        id: { in: serviceIds },
+        isActive: true,
+      },
+    });
+
+    if (servicesCount !== serviceIds.length) {
+      throw new AppError("Um ou mais serviços são inválidos ou inativos.");
+    }
+
+    const updatedTicket = await prisma.ticket.update({
+      where: { id },
+      data: {
+        services: {
+          connect: serviceIds.map((serviceId) => ({ id: serviceId })),
+        },
+      },
+      include: {
+        client: { select: { name: true, email: true } },
+        expert: { select: { name: true, email: true } },
+        services: { select: { name: true, price: true } },
+      },
+    });
+
+    return response.json({message: "Serviços adicionais adicionados com sucesso.", updatedTicket });
+  }
+
+  async deleteAdditionalServices(request: Request, response: Response) {
+    const paramsSchema = z.object({
+      id: z.uuid("ID do chamado inválido"),
+    });
+
+    const bodySchema = z.object({
+      serviceIds: z.array(z.uuid("ID de serviço inválido").trim()),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+    const { serviceIds } = bodySchema.parse(request.body);
+
+    const ticket = await prisma.ticket.findUnique({ where: { id } });
+
+    if (!ticket) {
+      throw new AppError("Chamado não encontrado.", 404);
+    }
+
+    if (ticket.status === TicketStatus.closed) {
+      throw new AppError("Chamados encerrados não podem ser atualizados.", 400);
+    }
+
+    const servicesCount = await prisma.service.count({
+      where: {
+        id: { in: serviceIds }, 
+        tickets: {
+          some: {
+            id: id, 
+          },
+        },
+      },
+    });
+
+    if (servicesCount !== serviceIds.length) {
+      throw new AppError(
+        "Um ou mais serviços fornecidos não estão associados a este chamado.",
+        404
+      );
+    }
+
+    const updatedTicket = await prisma.ticket.update({
+      where: { id },
+      data: {
+        services: {
+          disconnect: serviceIds.map((serviceId) => ({ id: serviceId })),
+        },
+      },
+      include: {
+        client: { select: { name: true, email: true } },
+        expert: { select: { name: true, email: true } },
+        services: { select: { name: true, price: true } },
+      },
+    });
+
+    return response.json({message: "Serviços removidos com sucesso.", updatedTicket });
   }
 }
 
