@@ -1,4 +1,5 @@
 import React from "react";
+import { classMerge } from "../utils/classMerge";
 
 function TableRoot({ children, ...rest }: React.ComponentProps<"table">) {
   const head = React.Children.map(children, (child) =>
@@ -30,8 +31,30 @@ function TableBody({ children, ...rest }: React.ComponentProps<"tbody">) {
   return <tbody {...rest}>{children}</tbody>;
 }
 
+function TableRow({ children, ...rest }: React.ComponentProps<"tr">) {
+  return (
+    <tr className="border-t border-gray-300 text-gray-800 h-16" {...rest}>
+      {children}
+    </tr>
+  );
+}
+
+function TableCell({
+  children,
+  className,
+  ...rest
+}: React.ComponentProps<"td">) {
+  return (
+    <td className={classMerge("px-3 truncate", className)} {...rest}>
+      {children}
+    </td>
+  );
+}
+
 export const Table = {
   Root: TableRoot,
   Head: TableHead,
   Body: TableBody,
+  Row: TableRow,
+  Cell: TableCell,
 };

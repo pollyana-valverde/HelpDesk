@@ -47,7 +47,7 @@ export function Tickets() {
 
   useEffect(() => {
     fetchTickets();
-  }, [tickets]);
+  }, []);
 
   return (
     <div className="grid gap-6">
@@ -61,7 +61,7 @@ export function Tickets() {
                 header.inResponsive
                   ? "table-cell w-[29%] lg:w-auto"
                   : "hidden lg:table-cell",
-                "px-3 truncate"
+                "px-3"
               )}
             >
               {header.label}
@@ -71,11 +71,8 @@ export function Tickets() {
 
         <Table.Body>
           {tickets.map((ticket) => (
-            <tr
-              key={ticket.id}
-              className="border-t border-gray-300 text-gray-800 h-16"
-            >
-              <td className="px-3 text-xs">
+           <Table.Row key={ticket.id}>
+              <Table.Cell className="text-xs">
                 {new Date(ticket.updatedAt)
                   .toLocaleString("pt-BR", {
                     day: "2-digit",
@@ -85,45 +82,45 @@ export function Tickets() {
                     minute: "2-digit",
                   })
                   .split(",")}
-              </td>
+              </Table.Cell>
 
-              <td className="px-3 text-xs font-bold hidden lg:table-cell truncate">
+              <Table.Cell className="text-xs font-bold hidden lg:table-cell">
                 {ticket.id}
-              </td>
+              </Table.Cell>
 
-              <td className="px-3">
+              <Table.Cell>
                 <h2 className="text-sm font-bold truncate">{ticket.title}</h2>
                 <p className="text-xs truncate">{ticket.services[0].name}</p>
-              </td>
+              </Table.Cell>
 
-              <td className="px-3 text-sm hidden lg:table-cell">
+              <Table.Cell className="text-sm hidden lg:table-cell">
                 R${formatCurrency(ticket.totalPrice)}
-              </td>
+              </Table.Cell>
 
-              <td className="px-3 truncate lg:table-cell hidden">
+              <Table.Cell className="lg:table-cell hidden">
                 <div className="flex gap-2">
                   <ProfileIcon username={ticket.client.name} variant="small" />
                   <h2 className="text-sm">{ticket.client.name}</h2>
                 </div>
-              </td>
+              </Table.Cell>
 
-              <td className="px-3 hidden truncate lg:table-cell">
+              <Table.Cell className="hidden lg:table-cell">
                 <div className="flex gap-2">
                   <ProfileIcon username={ticket.expert.name} variant="small" />
                   <h2 className="text-sm">{ticket.expert.name}</h2>
                 </div>
-              </td>
+              </Table.Cell>
 
-              <td className="px-3 truncate">
+              <Table.Cell>
                 <Tag variant={ticket.status} label={ticket.status} />
-              </td>
+              </Table.Cell>
 
-              <td className="px-3">
+              <Table.Cell>
                 <Button color="secondary" size="iconSmall">
                   <PenLine className="h-3.5 w-3.5" />
                 </Button>
-              </td>
-            </tr>
+              </Table.Cell>
+            </Table.Row>
           ))}
         </Table.Body>
       </Table.Root>
