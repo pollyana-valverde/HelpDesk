@@ -3,7 +3,10 @@ import request from 'supertest'
 import { app } from '../src/app'
 import { prisma } from '../src/database/prisma'
 import { hash } from 'bcrypt'
-import { authenticateUser, generateUniqueEmail } from './helpers'
+import jwt from 'jsonwebtoken'
+
+import { authConfig } from '../src/configs/auth'
+import { generateUniqueEmail } from './helpers'
 
 describe('Tickets', () => {
   let clientToken: string
@@ -63,10 +66,11 @@ describe('Tickets', () => {
       },
     })
 
-    // Obter tokens
-    clientToken = await authenticateUser(clientEmail, 'password123')
-    expertToken = await authenticateUser(expertEmail, 'password123')
-    adminToken = await authenticateUser(adminEmail, 'password123')
+    // Gerar tokens diretamente para evitar inconsistências
+    const secret = String(authConfig.jwt.secret)
+    clientToken = jwt.sign({ role: 'client' }, secret, { subject: client.id })
+    expertToken = jwt.sign({ role: 'expert' }, secret, { subject: expert.id })
+    adminToken = jwt.sign({ role: 'admin' }, secret, { subject: admin.id })
   })
 
   it('should create a ticket', async () => {
@@ -97,24 +101,26 @@ describe('Tickets', () => {
   })
 
   it('should show a ticket', async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
+    const createResponse = await request(app)
+      .post('/tickets')
+      .set('Authorization', `Bearer ${clientToken}`)
+      .send({
         title: 'Show Ticket',
         description: 'Description',
-        clientId: client.id,
         expertId: expert.id,
-        services: {
-          connect: [{ id: service1.id }],
-        },
-      },
-    })
+        serviceIds: [service1.id],
+      })
+
+    expect(createResponse.status).toBe(201)
+
+    const ticketId = createResponse.body.id
 
     const response = await request(app)
-      .get(`/tickets/${ticket.id}/show`)
+      .get(`/tickets/${ticketId}/show`)
       .set('Authorization', `Bearer ${adminToken}`)
 
     expect(response.status).toBe(200)
-    expect(response.body.id).toBe(ticket.id)
+    expect(response.body.id).toBe(ticketId)
     expect(response.body).toHaveProperty('totalPrice')
   })
 
@@ -137,20 +143,22 @@ describe('Tickets', () => {
   })
 
   it('should update ticket status', async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
+    const createResponse = await request(app)
+      .post('/tickets')
+      .set('Authorization', `Bearer ${clientToken}`)
+      .send({
         title: 'Update Status',
         description: 'Description',
-        clientId: client.id,
         expertId: expert.id,
-        services: {
-          connect: [{ id: service1.id }],
-        },
-      },
-    })
+        serviceIds: [service1.id],
+      })
+
+    expect(createResponse.status).toBe(201)
+
+    const ticketId = createResponse.body.id
 
     const response = await request(app)
-      .patch(`/tickets/${ticket.id}/status`)
+      .patch(`/tickets/${ticketId}/status`)
       .set('Authorization', `Bearer ${expertToken}`)
       .send({
         status: 'in_progress',
@@ -161,20 +169,20 @@ describe('Tickets', () => {
   })
 
   it('should add additional services', async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
+    const createResponse = await request(app)
+      .post('/tickets')
+      .set('Authorization', `Bearer ${clientToken}`)
+      .send({
         title: 'Add Services',
         description: 'Description',
-        clientId: client.id,
         expertId: expert.id,
-        services: {
-          connect: [{ id: service1.id }],
-        },
-      },
-    })
+        serviceIds: [service1.id],
+      })
+    expect(createResponse.status).toBe(201)
+    const ticketId = createResponse.body.id
 
     const response = await request(app)
-      .patch(`/tickets/${ticket.id}/services`)
+      .patch(`/tickets/${ticketId}/services`)
       .set('Authorization', `Bearer ${expertToken}`)
       .send({
         serviceIds: [service2.id],
@@ -185,20 +193,20 @@ describe('Tickets', () => {
   })
 
   it('should delete additional services', async () => {
-    const ticket = await prisma.ticket.create({
-      data: {
+    const createResponse = await request(app)
+      .post('/tickets')
+      .set('Authorization', `Bearer ${clientToken}`)
+      .send({
         title: 'Delete Services',
         description: 'Description',
-        clientId: client.id,
         expertId: expert.id,
-        services: {
-          connect: [{ id: service1.id }, { id: service2.id }],
-        },
-      },
-    })
+        serviceIds: [service1.id, service2.id],
+      })
+    expect(createResponse.status).toBe(201)
+    const ticketId = createResponse.body.id
 
     const response = await request(app)
-      .delete(`/tickets/${ticket.id}/services`)
+      .delete(`/tickets/${ticketId}/services`)
       .set('Authorization', `Bearer ${expertToken}`)
       .send({
         serviceIds: [service2.id],

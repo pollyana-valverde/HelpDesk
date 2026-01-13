@@ -1,7 +1,7 @@
 import { prisma } from '../src/database/prisma'
-import { afterAll, beforeEach } from 'vitest'
+import { afterAll, beforeAll } from 'vitest'
 
-beforeEach(async () => {
+beforeAll(async () => {
   // Limpar o banco de dados antes de cada teste
   await prisma.ticket.deleteMany()
   await prisma.service.deleteMany()
