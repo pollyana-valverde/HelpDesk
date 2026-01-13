@@ -44,7 +44,7 @@ class ClientController {
         id: true,
         name: true,
         email: true,
-      },
+      }, orderBy: { createdAt: "desc" },
     });
 
     return response.json(users);

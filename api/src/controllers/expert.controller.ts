@@ -61,7 +61,7 @@ class ExpertController {
         name: true,
         email: true,
         availableHours: true,
-      },
+      }, orderBy: { createdAt: "desc" },
     });
 
     return response.json(experts);

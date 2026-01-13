@@ -63,7 +63,7 @@ class TicketsController {
         client: { select: { name: true, email: true } },
         expert: { select: { name: true, email: true } },
         services: { select: { name: true, price: true } },
-      },
+      }, orderBy: { createdAt: "desc" },
     });
 
     return response.json(tickets);
@@ -77,7 +77,7 @@ class TicketsController {
       include: {
         expert: { select: { name: true, email: true } },
         services: { select: { name: true, price: true } },
-      },
+      }, orderBy: { createdAt: "desc" },
     });
 
     return response.json(tickets);
@@ -91,7 +91,7 @@ class TicketsController {
       include: {
         client: { select: { name: true, email: true } },
         services: { select: { name: true, price: true } },
-      },
+      }, orderBy: { createdAt: "desc" },
     });
 
     return response.json(tickets);

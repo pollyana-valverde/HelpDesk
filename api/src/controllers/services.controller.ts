@@ -36,7 +36,7 @@ class ServicesController {
     }
 
     async index(request: Request, response: Response) {
-        const services = await prisma.service.findMany();
+        const services = await prisma.service.findMany({ orderBy: { createdAt: "desc" },});
 
         return response.status(200).json(services);
     }
