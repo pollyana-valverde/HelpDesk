@@ -58,15 +58,67 @@ class TicketsController {
   }
 
   async index(request: Request, response: Response) {
+    const querySchema = z.object({
+      page: z.coerce.number().optional().default(1),
+      perPage: z.coerce.number().optional().default(10),
+    });
+
+    const { page, perPage } = querySchema.parse(request.query);
+
+    const skip = (page - 1) * perPage;
+
     const tickets = await prisma.ticket.findMany({
+      skip,
+      take: perPage,
       include: {
         client: { select: { name: true, email: true } },
         expert: { select: { name: true, email: true } },
         services: { select: { name: true, price: true } },
-      }, orderBy: { createdAt: "desc" },
+      },
+      orderBy: { updatedAt: "desc" },
     });
 
-    return response.json(tickets);
+    const totalRecords = await prisma.ticket.count();
+
+    const totalPages = Math.ceil(totalRecords / perPage);
+
+    return response.json({
+      tickets,
+      pagination: {
+        page,
+        perPage,
+        totalRecords,
+        totalPages: totalPages > 0 ? totalPages : 1,
+      },
+    });
+  }
+
+  async show(request: Request, response: Response) {
+    const paramsSchema = z.object({
+      id: z.uuid("ID do chamado inválido"),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+    
+    const ticket = await prisma.ticket.findUnique({
+      where: { id },
+      include: {
+        client: { select: { name: true, email: true } },
+        expert: { select: { name: true, email: true } },
+        services: { select: { name: true, price: true } },
+      },
+    });
+
+    if (!ticket) {
+      throw new AppError("Chamado não encontrado.", 404);
+    }
+
+    const totalPrice = ticket.services.reduce(
+      (sum, service) => sum + Number(service.price),
+      0
+    );
+
+    return response.json({ ...ticket, totalPrice });
   }
 
   async showClientTickets(request: Request, response: Response) {
@@ -77,7 +129,8 @@ class TicketsController {
       include: {
         expert: { select: { name: true, email: true } },
         services: { select: { name: true, price: true } },
-      }, orderBy: { createdAt: "desc" },
+      },
+      orderBy: { createdAt: "desc" },
     });
 
     return response.json(tickets);
@@ -91,7 +144,8 @@ class TicketsController {
       include: {
         client: { select: { name: true, email: true } },
         services: { select: { name: true, price: true } },
-      }, orderBy: { createdAt: "desc" },
+      },
+      orderBy: { createdAt: "desc" },
     });
 
     return response.json(tickets);

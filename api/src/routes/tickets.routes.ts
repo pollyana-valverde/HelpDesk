@@ -8,6 +8,7 @@ const ticketsController = new TicketsController();
 
 ticketsRoutes.post("/", verifyAuthorization(["client"]), ticketsController.create);
 ticketsRoutes.get("/", verifyAuthorization(["admin"]), ticketsController.index);
+ticketsRoutes.get("/:id/show", verifyAuthorization(["admin", "expert", "client"]), ticketsController.show);
 
 ticketsRoutes.get("/client", verifyAuthorization(["client"]), ticketsController.showClientTickets);
 ticketsRoutes.get("/expert", verifyAuthorization(["expert"]), ticketsController.showExpertTickets);
