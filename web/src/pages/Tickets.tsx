@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
-import { PenLine } from "lucide-react";
 
+import { PenLine } from "lucide-react";
 import { formatCurrency } from "../utils/formatCurrency";
 import { classMerge } from "../utils/classMerge";
 import { api } from "../services/api";
@@ -26,9 +26,14 @@ export function Tickets() {
     null
   );
   const [tickets, setTickets] = useState<TicketAPIResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function fetchTickets() {
     try {
+      setIsLoading(true);
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       const response = await api.get("/tickets");
 
       setTickets(response.data.tickets);
@@ -42,6 +47,8 @@ export function Tickets() {
       return setStateError({
         message: "Não foi possível carregar os chamados",
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -71,7 +78,7 @@ export function Tickets() {
 
         <Table.Body>
           {tickets.map((ticket) => (
-           <Table.Row key={ticket.id}>
+            <Table.Row key={ticket.id}>
               <Table.Cell className="text-xs">
                 {new Date(ticket.updatedAt)
                   .toLocaleString("pt-BR", {
@@ -126,7 +133,13 @@ export function Tickets() {
       </Table.Root>
 
       {stateError && (
-        <p className="text-sm text-red-600  ">{stateError?.message}</p>
+        <p className="text-lg text-red-600  ">{stateError?.message}</p>
+      )}
+
+      {isLoading && (
+        <p className="text-sm font-bold w-full flex justify-center text-gray-800 ">
+          Carregando...
+        </p>
       )}
     </div>
   );
