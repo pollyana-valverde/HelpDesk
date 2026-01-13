@@ -80,10 +80,6 @@ class TicketsController {
       },
     });
 
-    if (tickets.length === 0) {
-      throw new AppError("Nenhum chamado encontrado.", 404);
-    }
-
     return response.json(tickets);
   }
 
@@ -97,10 +93,6 @@ class TicketsController {
         services: { select: { name: true, price: true } },
       },
     });
-
-    if (tickets.length === 0) {
-      throw new AppError("Nenhum chamado encontrado.", 404);
-    }
 
     return response.json(tickets);
   }
@@ -163,19 +155,22 @@ class TicketsController {
 
     const existingServices = await prisma.ticket.findUnique({
       where: { id },
-      include: {
+      select: {
         services: {
           where: {
             id: { in: serviceIds },
+          },
+          select: {
+            id: true,
           },
         },
       },
     });
 
-    if (existingServices) {
+    if (existingServices?.services && existingServices.services.length > 0) {
       throw new AppError(
         "O serviço fornecido já está associado ao chamado.",
-        400
+        409
       );
     }
 
@@ -204,7 +199,7 @@ class TicketsController {
       },
     });
 
-    return response.json({message: "Serviços adicionais adicionados com sucesso.", updatedTicket });
+    return response.json(updatedTicket);
   }
 
   async deleteAdditionalServices(request: Request, response: Response) {
@@ -231,10 +226,10 @@ class TicketsController {
 
     const servicesCount = await prisma.service.count({
       where: {
-        id: { in: serviceIds }, 
+        id: { in: serviceIds },
         tickets: {
           some: {
-            id: id, 
+            id: id,
           },
         },
       },
@@ -261,7 +256,7 @@ class TicketsController {
       },
     });
 
-    return response.json({message: "Serviços removidos com sucesso.", updatedTicket });
+    return response.json(updatedTicket);
   }
 }
 

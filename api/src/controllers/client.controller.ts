@@ -6,16 +6,15 @@ import { hash } from "bcrypt";
 import { z } from "zod";
 import { AppError } from "../utils/AppError.js";
 
-class UsersController {
+class ClientController {
   async create(request: Request, response: Response) {
     const bodySchema = z.object({
       name: z.string().trim().min(3, "Nome é obrigatório"),
       email: z.email("Email inválido").trim().toLowerCase(),
       password: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
-      role: z.enum(UserRole, "Role inválido").default(UserRole.client),
     });
 
-    const { name, email, password, role } = bodySchema.parse(request.body);
+    const { name, email, password } = bodySchema.parse(request.body);
 
     const userWithSameEmail = await prisma.user.findFirst({
       where: { email },
@@ -32,7 +31,6 @@ class UsersController {
         name,
         email,
         password: hashedPassword,
-        role,
       },
     });
 
@@ -102,28 +100,12 @@ class UsersController {
   }
 
   async updatePassword(request: Request, response: Response) {
-    const paramsSchema = z.object({
-      id: z.uuid("ID inválido"),
-    });
-
     const bodySchema = z.object({
       password: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
     });
 
-    const { id } = paramsSchema.parse(request.params);
+    const { id } = request.user!;
     const { password } = bodySchema.parse(request.body);
-
-    const user = await prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!user || user.role !== UserRole.client) {
-      throw new AppError("Usuário não encontrado", 404);
-    }
-
-    if (id !== request.user?.id) {
-      throw new AppError("Você só pode alterar sua própria senha", 403);
-    }
 
     const hashedPassword = await hash(password, 10);
 
@@ -164,4 +146,4 @@ class UsersController {
   }
 }
 
-export { UsersController };
+export { ClientController };

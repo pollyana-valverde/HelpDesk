@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { usersRoutes } from "./users.routes.js";
+import { clientRoutes } from "./client.routes.js";
 import { expertRoutes } from "./expert.routes.js";
 import { sessionRoutes } from "./session.routes.js";
 import { ticketsRoutes } from "./tickets.routes.js";
@@ -11,7 +11,7 @@ import { ensureAuthenticated } from "../middlewares/ensure-authenticated.js";
 const routes = Router();
 
 // Rotas públicas
-routes.use("/users", usersRoutes);
+routes.use("/clients", clientRoutes);
 routes.use("/sessions", sessionRoutes);
 
 // Rotas privadas

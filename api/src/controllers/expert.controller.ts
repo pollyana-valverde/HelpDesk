@@ -12,7 +12,6 @@ class ExpertController {
       name: z.string().trim().min(3, "Nome é obrigatório"),
       email: z.email("Email inválido").trim().toLowerCase(),
       password: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
-      role: z.enum(UserRole, "Role inválido").default(UserRole.expert),
       availableHours: z
         .array(z.string("Horário inválido"))
         .default([
@@ -27,7 +26,7 @@ class ExpertController {
         ]),
     });
 
-    const { name, email, password, role, availableHours } = bodySchema.parse(
+    const { name, email, password, availableHours } = bodySchema.parse(
       request.body
     );
 
@@ -46,7 +45,7 @@ class ExpertController {
         name,
         email,
         password: hashedPassword,
-        role,
+        role: UserRole.expert,
         availableHours,
       },
     });
@@ -116,28 +115,12 @@ class ExpertController {
   }
 
   async updatePassword(request: Request, response: Response) {
-    const paramsSchema = z.object({
-      id: z.uuid("ID inválido"),
-    });
-
     const bodySchema = z.object({
       password: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
     });
 
-    const { id } = paramsSchema.parse(request.params);
+    const { id } = request.user!;
     const { password } = bodySchema.parse(request.body);
-
-    const expert = await prisma.user.findUnique({
-      where: { id },
-    });
-
-    if (!expert || expert.role !== UserRole.expert) {
-      throw new AppError("Técnico não encontrado", 404);
-    }
-
-    if (request.user?.id !== id) {
-      throw new AppError("Você só pode alterar sua própria senha", 403);
-    }
 
     const hashedPassword = await hash(password, 10);
 

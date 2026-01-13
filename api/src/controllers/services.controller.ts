@@ -68,6 +68,7 @@ class ServicesController {
             const serviceAlreadyExists = await prisma.service.findFirst({
                 where: {
                     name,
+                    id: { not: id },
                 },
             });
 
