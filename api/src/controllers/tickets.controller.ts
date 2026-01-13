@@ -82,8 +82,16 @@ class TicketsController {
 
     const totalPages = Math.ceil(totalRecords / perPage);
 
+    const ticketsWithTotalPrice = tickets.map((ticket) => {
+      const totalPrice = ticket.services.reduce(
+        (sum, service) => sum + Number(service.price),
+        0
+      );
+      return { ...ticket, totalPrice };
+    });
+
     return response.json({
-      tickets,
+      tickets: ticketsWithTotalPrice,
       pagination: {
         page,
         perPage,
@@ -99,7 +107,7 @@ class TicketsController {
     });
 
     const { id } = paramsSchema.parse(request.params);
-    
+
     const ticket = await prisma.ticket.findUnique({
       where: { id },
       include: {
