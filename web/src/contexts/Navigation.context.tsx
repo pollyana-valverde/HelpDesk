@@ -1,10 +1,10 @@
 import { createContext } from "react";
 
 interface NavigationContextType {
-  openMenu: boolean;
-  openUser: boolean;
-  toggleMenu: () => void;
-  toggleUser: () => void;
+  isPagesMenuClosed: boolean;
+  isUserMenuClosed: boolean;
+  togglePagesMenu: () => void;
+  toggleUserMenu: () => void;
 }
 
 export const NavigationContext = createContext<NavigationContextType | null>(

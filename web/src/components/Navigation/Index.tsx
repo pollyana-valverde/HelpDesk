@@ -1,11 +1,11 @@
 import { NavigationRoot } from "./Root";
 import { NavigationLogo } from "./Logo";
-import { NavigationMenu } from "./Menu";
+import { NavigationPages } from "./Pages";
 import { NavigationUser } from "./User";
 
 export const Navigation = {
   Root: NavigationRoot,
   Logo: NavigationLogo,
-  Menu: NavigationMenu,
+  Menu: NavigationPages,
   User: NavigationUser,
 };

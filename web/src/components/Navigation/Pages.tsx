@@ -4,18 +4,19 @@ import { useLocation } from "react-router";
 
 import { NAVLINKS } from "../../utils/navLinks";
 
-import { NavLink } from "../NavLink";
-import { Menu, X } from "lucide-react";
+import { NavigationLink } from "./Link";
+import { MenuIcon, X } from "lucide-react";
+import { Menu } from "../Menu/Index";
 
-export function NavigationMenu(props: React.ComponentProps<"div">) {
-  const { openMenu, toggleMenu } = useNavigation();
+export function NavigationPages(props: React.ComponentProps<"div">) {
+  const { isPagesMenuClosed, togglePagesMenu } = useNavigation();
   const { session } = useAuth();
   const location = useLocation();
 
   const renderNavLinks = NAVLINKS.filter(
     (link) => link.role === session?.user?.role
   ).map((link) => (
-    <NavLink
+    <NavigationLink
       key={link.label}
       links={link}
       variant={location.pathname === link.path ? "active" : "default"}
@@ -27,18 +28,25 @@ export function NavigationMenu(props: React.ComponentProps<"div">) {
       {/* Menu Mobile Button */}
       <div
         className="bg-gray-800 text-gray-100 h-10 w-10 flex items-center justify-center rounded-md cursor-pointer md:hidden"
-        onClick={toggleMenu}
+        onClick={togglePagesMenu}
       >
-        {openMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        {isPagesMenuClosed ? (
+          <MenuIcon className="w-5 h-5" />
+        ) : (
+          <X className="w-5 h-5" />
+        )}
       </div>
 
       {/* Menu Mobile */}
-      {openMenu && (
-        <div className="bg-gray-900 absolute top-24 w-auto h-fit py-4 px-5 rounded-xl shadow-lg left-6 right-6 md:hidden">
-          <span className="text-gray-400 uppercase text-xxs">Menu</span>
-          <nav className="mt-4 gap-1 flex flex-col">{renderNavLinks}</nav>
-        </div>
-      )}
+      <Menu.Root
+        isMenuClosed={isPagesMenuClosed}
+        className="w-auto left-6 right-6 md:hidden"
+      >
+        <Menu.Title>Menu</Menu.Title>
+        <Menu.Content className="gap-1 flex flex-col">
+          {renderNavLinks}
+        </Menu.Content>
+      </Menu.Root>
 
       {/* Menu desktop */}
       <div

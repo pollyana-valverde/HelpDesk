@@ -1,5 +1,5 @@
 import { Link, type LinkProps } from "react-router-dom";
-import { classMerge } from "../utils/classMerge";
+import { classMerge } from "../../utils/classMerge";
 
 export type LinkData = {
   label: string;
@@ -20,7 +20,7 @@ const variants = {
   },
 };
 
-export function NavLink({ links, variant = "default", ...rest }: Props) {
+export function NavigationLink({ links, variant = "default", ...rest }: Props) {
   return (
     <Link
       to={links.path}

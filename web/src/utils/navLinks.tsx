@@ -1,4 +1,4 @@
-import type { LinkData } from "../components/NavLink";
+import type { LinkData } from "../components/Navigation/Link";
 
 import { ClipboardList, Users, BriefcaseBusiness, Wrench } from "lucide-react";
 

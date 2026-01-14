@@ -4,9 +4,10 @@ import { useNavigation } from "../../hooks/useNavigation";
 import { Link } from "react-router-dom";
 import { ProfileIcon } from "../ProfileIcon";
 import { LogOut, CircleUser } from "lucide-react";
+import { Menu } from "../Menu/Index";
 
 export function NavigationUser(props: React.ComponentProps<"div">) {
-  const { openUser, toggleUser } = useNavigation();
+  const { isUserMenuClosed, toggleUserMenu } = useNavigation();
   const { session, logout } = useAuth();
 
   return (
@@ -14,7 +15,7 @@ export function NavigationUser(props: React.ComponentProps<"div">) {
       {/* User Profile */}
       <div
         className="flex items-center justify-center cursor-pointer gap-3"
-        onClick={toggleUser}
+        onClick={toggleUserMenu}
         {...props}
       >
         <ProfileIcon username={session?.user?.name} />
@@ -27,26 +28,27 @@ export function NavigationUser(props: React.ComponentProps<"div">) {
       </div>
 
       {/* User Menu */}
-      {openUser && (
-        <div className="bg-gray-900 absolute top-24 w-2/3 h-fit py-4 px-5 rounded-xl shadow-lg right-6 md:w-50 md:bottom-1 md:top-auto md:left-51">
-          <span className="text-gray-400 uppercase text-xxs">Opções</span>
+      <Menu.Root
+        isMenuClosed={isUserMenuClosed}
+        className="w-2/3 right-6 md:w-50 md:bottom-1 md:top-auto md:left-51"
+      >
+        <Menu.Title>Opções</Menu.Title>
 
-          <div className="mt-4">
-            <Link
-              to="/profile"
-              className="text-gray-100 flex gap-2 h-10 items-center cursor-pointer"
-            >
-              <CircleUser className="w-5 h-5" /> Perfil
-            </Link>
-            <a
-              className="text-red-600 flex gap-2 h-10 items-center cursor-pointer"
-              onClick={logout}
-            >
-              <LogOut className="w-5 h-5" /> Sair
-            </a>
-          </div>
-        </div>
-      )}
+        <Menu.Content>
+          <Link
+            to="/profile"
+            className="text-gray-100 flex gap-2 h-10 items-center cursor-pointer"
+          >
+            <CircleUser className="w-5 h-5" /> Perfil
+          </Link>
+          <a
+            className="text-red-600 flex gap-2 h-10 items-center cursor-pointer"
+            onClick={logout}
+          >
+            <LogOut className="w-5 h-5" /> Sair
+          </a>
+        </Menu.Content>
+      </Menu.Root>
     </>
   );
 }
