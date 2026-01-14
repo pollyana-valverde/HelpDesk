@@ -28,7 +28,7 @@ export function Experts() {
     try {
       setIsLoading(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const response = await api.get("/experts");
 
@@ -64,7 +64,7 @@ export function Experts() {
                 header.inResponsive
                   ? "table-cell lg:w-auto"
                   : "hidden lg:table-cell ",
-                  header.label === "" ? "w-[12%]" : "",
+                  header.label === "" && "w-[12%] lg:w-[1%]",
                 "px-3"
               )}
             >
