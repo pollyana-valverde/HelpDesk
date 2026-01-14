@@ -19,6 +19,7 @@ const TABLE_HEADERS = [
   { label: "Cliente" },
   { label: "Técnico" },
   { label: "Status", inResponsive: true },
+  { label: "", inResponsive: true },
 ];
 
 export function Tickets() {
@@ -66,8 +67,9 @@ export function Tickets() {
               key={index}
               className={classMerge(
                 header.inResponsive
-                  ? "table-cell w-[29%] lg:w-auto"
+                  ? "table-cell lg:w-auto"
                   : "hidden lg:table-cell",
+                  header.label === "" || header.label === "Status"  ? "w-[12%]" : "",
                 "px-3"
               )}
             >
