@@ -3,13 +3,14 @@ import { useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 
 import { api } from "../services/api";
+import { formatCurrency } from "../utils/formatCurrency";
+import { formatDateTime } from "../utils/formatDateTime";
 
 import { Clock2, CircleCheckBig } from "lucide-react";
 import { Header } from "../components/Header";
 import { Button } from "../components/Button";
 import { Tag } from "../components/Tag";
 import { ProfileIcon } from "../components/ProfileIcon";
-import { formatCurrency } from "../utils/formatCurrency";
 
 export function TicketDetail() {
   const { id } = useParams();
@@ -70,7 +71,7 @@ export function TicketDetail() {
                 <span className="text-xs font-bold text-gray-500">
                   {ticket.id}
                 </span>
-                <Tag variant={ticket.status}>
+                <Tag variant={ticket.status} className="capitalize">
                   {ticket.status.replace("_", " ")}
                 </Tag>
               </div>
@@ -96,15 +97,7 @@ export function TicketDetail() {
                 </span>
 
                 <p className="text-xs text-gray-800">
-                  {new Date(ticket.createdAt)
-                    .toLocaleDateString("pt-BR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                    .split(",")}
+                  {formatDateTime(ticket.createdAt)}
                 </p>
               </div>
 
@@ -114,15 +107,7 @@ export function TicketDetail() {
                 </span>
 
                 <p className="text-xs text-gray-800">
-                  {new Date(ticket.updatedAt)
-                    .toLocaleDateString("pt-BR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                    .split(",")}
+                  {formatDateTime(ticket.updatedAt)}
                 </p>
               </div>
             </div>

@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AxiosError } from "axios";
 
-import { PenLine } from "lucide-react";
-import { formatCurrency } from "../utils/formatCurrency";
-import { classMerge } from "../utils/classMerge";
 import { api } from "../services/api";
+import { classMerge } from "../utils/classMerge";
+import { formatCurrency } from "../utils/formatCurrency";
+import { formatDateTime } from "../utils/formatDateTime";
 
+import { PenLine } from "lucide-react";
 import { Table } from "../components/Table";
 import { Tag } from "../components/Tag";
 import { ProfileIcon } from "../components/ProfileIcon";
@@ -87,15 +88,7 @@ export function Tickets() {
           {tickets.map((ticket) => (
             <Table.Row key={ticket.id}>
               <Table.Cell className="text-xs">
-                {new Date(ticket.updatedAt)
-                  .toLocaleString("pt-BR", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                  .split(",")}
+                {formatDateTime(ticket.updatedAt)}
               </Table.Cell>
 
               <Table.Cell className="text-xs font-bold hidden lg:table-cell">
@@ -127,7 +120,7 @@ export function Tickets() {
 
               <Table.Cell>
                 <Tag variant={ticket.status}>
-                  <h2 className="hidden lg:flex mr-1">
+                  <h2 className="hidden lg:flex mr-1 capitalize">
                     {ticket.status.replace("_", " ")}
                   </h2>
                 </Tag>
