@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { AxiosError } from "axios";
 
 import { PenLine } from "lucide-react";
@@ -28,6 +29,8 @@ export function Tickets() {
   );
   const [tickets, setTickets] = useState<TicketAPIResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   async function fetchTickets() {
     try {
@@ -69,7 +72,9 @@ export function Tickets() {
                 header.inResponsive
                   ? "table-cell lg:w-auto"
                   : "hidden lg:table-cell",
-                  header.label === "" || header.label === "Status"  ? "w-[12%]" : "",
+                header.label === "" || header.label === "Status"
+                  ? "w-[12%]"
+                  : "",
                 "px-3"
               )}
             >
@@ -121,13 +126,19 @@ export function Tickets() {
               </Table.Cell>
 
               <Table.Cell>
-                <Tag variant={ticket.status} >
-                    <h2 className="hidden lg:flex mr-1">{ticket.status.replace("_", " ")}</h2>
+                <Tag variant={ticket.status}>
+                  <h2 className="hidden lg:flex mr-1">
+                    {ticket.status.replace("_", " ")}
+                  </h2>
                 </Tag>
               </Table.Cell>
 
               <Table.Cell>
-                <Button color="secondary" size="iconSmall">
+                <Button
+                  color="secondary"
+                  size="iconSmall"
+                  onClick={() => navigate(`/tickets/${ticket.id}/detail`)}
+                >
                   <PenLine className="h-3.5 w-3.5" />
                 </Button>
               </Table.Cell>
