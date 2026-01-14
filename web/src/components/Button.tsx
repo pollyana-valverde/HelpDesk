@@ -10,7 +10,7 @@ const variants = {
   color: {
     primary: "bg-gray-800 text-gray-100 hover:bg-gray-900 ",
     secondary: "bg-gray-300 text-gray-800 hover:bg-gray-400 hover:text-gray-900",
-    link: "bg-gray-300 text-gray-800 hover:bg-gray-400 hover:text-gray-900",
+    link: "text-gray-500 p-0.5 h-fit hover:bg-gray-300 hover:text-gray-900",
   },
   size: {
     base: "w-full md:w-fit px-4 h-10 text-sm",

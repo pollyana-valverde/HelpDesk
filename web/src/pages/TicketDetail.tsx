@@ -167,8 +167,8 @@ export function TicketDetail() {
               <span className="text-xs text-gray-400 font-bold">
                 Adicionais
               </span>
-              <div className="flex justify-between">
-                <p className="text-xs text-gray-800">
+              <div className="flex">
+                <p className="text-xs text-gray-800 flex-1">
                   {ticket.services?.map((service) => service.name)}
                 </p>
                 <p className="text-xs text-gray-800">
