@@ -90,7 +90,7 @@ export function Experts() {
               <Table.Cell>
                 <div className="flex truncate">
                   {expert.availableHours?.map((hour) => (
-                    <Tag key={hour} className="mr-1" variant="disabled">
+                    <Tag key={hour} className="mr-1" styleVariant="disabled">
                       {hour}
                     </Tag>
                   ))}

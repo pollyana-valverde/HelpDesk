@@ -119,7 +119,7 @@ export function Tickets() {
               </Table.Cell>
 
               <Table.Cell>
-                <Tag variant={ticket.status}>
+                <Tag styleVariant={ticket.status}>
                   <h2 className="hidden lg:flex mr-1 capitalize">
                     {ticket.status.replace("_", " ")}
                   </h2>

@@ -71,7 +71,7 @@ export function TicketDetail() {
                 <span className="text-xs font-bold text-gray-500">
                   {ticket.id}
                 </span>
-                <Tag variant={ticket.status} className="capitalize">
+                <Tag styleVariant={ticket.status} className="capitalize">
                   {ticket.status.replace("_", " ")}
                 </Tag>
               </div>
