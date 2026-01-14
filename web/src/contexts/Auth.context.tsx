@@ -46,25 +46,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const user = localStorage.getItem(`${LOCAL_STORAGE_KEY}:user`);
 
     if (token && user) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${JSON.parse(
-        token
-      )}`;
+      const parsedToken = JSON.parse(token);
+      const parsedUser = JSON.parse(user);
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${parsedToken}`;
 
       setSession({
-        token,
-        user: JSON.parse(user),
+        token: parsedToken,
+        user: parsedUser,
       });
     }
     setIsLoading(false);
   }
 
-    useEffect(() => {
-      loadUser();
-    }, []);
+  useEffect(() => {
+    loadUser();
+  }, []);
 
-    return(
+  return (
     <AuthContext.Provider value={{ isLoading, session, login, logout }}>
       {children}
     </AuthContext.Provider>
-    )
+  );
 }

@@ -13,7 +13,7 @@ const variants = {
     link: "text-gray-500 p-0.5 h-fit hover:bg-gray-300 hover:text-gray-900",
   },
   size: {
-    base: "w-full md:w-fit px-4 h-10 text-sm",
+    base: "w-full md:w-auto px-4 h-10 text-sm",
     small: "w-fit px-2 h-7 text-xs",
     icon: "w-10 h-10",
     iconSmall: "w-7 h-7",
@@ -42,7 +42,7 @@ export function Button({
       )}
       {...rest}
     >
-      {isLoading ? "Loading..." : children}
+      {isLoading ? "Carregando..." : children}
     </button>
   );
 }

@@ -29,6 +29,7 @@ export function SignIn() {
   const [stateError, setStateError] = useState<{ message: string } | null>(
     null
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -44,6 +45,10 @@ export function SignIn() {
 
   async function handleSignIn(data: FormData) {
     try {
+       setIsLoading(true);
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       const response = await api.post("/sessions", data);
 
       auth.login(response.data);
@@ -59,12 +64,14 @@ export function SignIn() {
       }
 
       if (error instanceof AxiosError) {
-        return setStateError({ message: error?.response?.data.message });
+        console.log(error?.response?.data.message);
       }
 
       return setStateError({
         message: "Erro ao fazer login. Tente novamente.",
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -113,15 +120,15 @@ export function SignIn() {
               />
             )}
           />
+
+          {stateError && (
+            <p className="text-sm text-red-600 text-center ">
+              {stateError?.message}
+            </p>
+          )}
         </div>
 
-        {stateError && (
-          <p className="text-sm text-red-600 text-center ">
-            {stateError?.message}
-          </p>
-        )}
-
-        <Button isLoading={false} type="submit">
+        <Button isLoading={isLoading} type="submit">
           Entrar
         </Button>
       </form>
