@@ -5,7 +5,7 @@ import { PenLine, Trash } from "lucide-react";
 import { classMerge } from "../utils/classMerge";
 import { api } from "../services/api";
 
-import { Table } from "../components/Table";
+import { Table } from "../components/Table/Index";
 import { ProfileIcon } from "../components/ProfileIcon";
 import { Button } from "../components/Button";
 

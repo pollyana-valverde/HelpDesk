@@ -8,7 +8,7 @@ import { formatCurrency } from "../utils/formatCurrency";
 import { formatDateTime } from "../utils/formatDateTime";
 
 import { PenLine } from "lucide-react";
-import { Table } from "../components/Table";
+import { Table } from "../components/Table/Index";
 import { Tag } from "../components/Tag";
 import { ProfileIcon } from "../components/ProfileIcon";
 import { Button } from "../components/Button";
