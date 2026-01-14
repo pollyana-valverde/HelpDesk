@@ -100,7 +100,7 @@ export function SignIn() {
                 placeholder="example@email.com"
                 {...field}
                 helperText={errors.email?.message}
-                inputError={!!errors.email}
+                hasValidationError={!!errors.email}
               />
             )}
           />
@@ -116,7 +116,7 @@ export function SignIn() {
                 placeholder="Digite sua senha"
                 {...field}
                 helperText={errors.password?.message}
-                inputError={!!errors.password}
+                hasValidationError={!!errors.password}
               />
             )}
           />

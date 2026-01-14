@@ -101,7 +101,7 @@ export function SignUp() {
                 placeholder="Digite o nome completo"
                 {...field}
                 helperText={errors.name?.message}
-                inputError={!!errors.name}
+                hasValidationError={!!errors.name}
               />
             )}
           />
@@ -117,7 +117,7 @@ export function SignUp() {
                 placeholder="example@email.com"
                 {...field}
                 helperText={errors.email?.message}
-                inputError={!!errors.email}
+                hasValidationError={!!errors.email}
               />
             )}
           />
@@ -133,7 +133,7 @@ export function SignUp() {
                 placeholder="Digite sua senha"
                 {...field}
                 helperText={errors.password?.message ?? "Mínimo de 6 dígitos"}
-                inputError={!!errors.password}
+                hasValidationError={!!errors.password}
               />
             )}
           />
