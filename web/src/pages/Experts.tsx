@@ -78,7 +78,7 @@ export function Experts() {
             <Table.Row key={expert.id}>
               <Table.Cell>
                 <div className="flex gap-3 items-center">
-                  <ProfileIcon variant="medium" username={expert.name} />
+                  <ProfileIcon sizeVariant="medium" username={expert.name} />
                   <h2 className="text-sm font-bold">{expert.name}</h2>
                 </div>
               </Table.Cell>

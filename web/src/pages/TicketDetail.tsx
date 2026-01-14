@@ -115,7 +115,7 @@ export function TicketDetail() {
             <div className="grid gap-2">
               <span className="text-xs text-gray-400 font-bold">Cliente</span>
               <div className="flex gap-2">
-                <ProfileIcon username={ticket.client.name} variant="small" />
+                <ProfileIcon username={ticket.client.name} sizeVariant="small" />
                 <p className="text-sm text-gray-800">{ticket.client.name}</p>
               </div>
             </div>
@@ -127,7 +127,7 @@ export function TicketDetail() {
                 Técnico responsável
               </span>
               <div className="flex gap-2 items-center">
-                <ProfileIcon username={ticket.expert.name} variant="medium" />
+                <ProfileIcon username={ticket.expert.name} sizeVariant="medium" />
                 <div>
                   <p className="text-sm text-gray-800">{ticket.expert.name}</p>
                   <p className="text-xs text-gray-500">{ticket.expert.email}</p>

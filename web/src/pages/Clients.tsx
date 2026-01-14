@@ -68,7 +68,7 @@ export function Clients() {
             <Table.Row key={client.id}>
               <Table.Cell>
                 <div className="flex gap-3 items-center">
-                  <ProfileIcon variant="medium" username={client.name} />
+                  <ProfileIcon sizeVariant="medium" username={client.name} />
                   <h2 className="text-sm font-bold">{client.name}</h2>
                 </div>
               </Table.Cell>

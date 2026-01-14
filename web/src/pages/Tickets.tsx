@@ -106,14 +106,14 @@ export function Tickets() {
 
               <Table.Cell className="lg:table-cell hidden">
                 <div className="flex gap-2">
-                  <ProfileIcon username={ticket.client.name} variant="small" />
+                  <ProfileIcon username={ticket.client.name} sizeVariant="small" />
                   <h2 className="text-sm">{ticket.client.name}</h2>
                 </div>
               </Table.Cell>
 
               <Table.Cell className="hidden lg:table-cell">
                 <div className="flex gap-2">
-                  <ProfileIcon username={ticket.expert.name} variant="small" />
+                  <ProfileIcon username={ticket.expert.name} sizeVariant="small" />
                   <h2 className="text-sm">{ticket.expert.name}</h2>
                 </div>
               </Table.Cell>
