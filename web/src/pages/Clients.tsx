@@ -5,11 +5,11 @@ import { PenLine, Trash } from "lucide-react";
 import { classMerge } from "../utils/classMerge";
 import { api } from "../services/api";
 
+import { Header } from "../components/Header/Index";
 import { Table } from "../components/Table/Index";
 import { ProfileIcon } from "../components/ProfileIcon";
 import { Button } from "../components/Button";
 import { ErrorMessage } from "../components/ErrorMessage";
-import { Header } from "../components/Header/Index";
 import { Loading } from "../components/Loading";
 
 const TABLE_HEADERS = [{ label: "Nome" }, { label: "Email" }, { label: "" }];
@@ -26,9 +26,9 @@ export function Clients() {
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const response = await api.get("/clients");
+      const clients = await api.get("/clients");
 
-      setClients(response.data);
+      setClients(clients.data);
     } catch (error) {
       console.log(error);
 
