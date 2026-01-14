@@ -7,7 +7,7 @@ import { formatCurrency } from "../utils/formatCurrency";
 import { formatDateTime } from "../utils/formatDateTime";
 
 import { Clock2, CircleCheckBig } from "lucide-react";
-import { Header } from "../components/Header";
+import { Header } from "../components/Header/Index";
 import { Button } from "../components/Button";
 import { Tag } from "../components/Tag";
 import { ProfileIcon } from "../components/ProfileIcon";
