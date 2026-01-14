@@ -2,7 +2,7 @@ import { BrowserRouter } from "react-router";
 
 import { useAuth } from "../hooks/useAuth";
 
-import { Loading } from "../pages/Loading";
+import { Loading } from "../components/Loading";
 
 import { AuthRoutes } from "./Auth.routes";
 import { AdminRoutes } from "./Admin.routes";

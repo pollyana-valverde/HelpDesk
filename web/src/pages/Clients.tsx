@@ -8,46 +8,52 @@ import { api } from "../services/api";
 import { Table } from "../components/Table/Index";
 import { ProfileIcon } from "../components/ProfileIcon";
 import { Button } from "../components/Button";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { Header } from "../components/Header/Index";
+import { Loading } from "../components/Loading";
 
 const TABLE_HEADERS = [{ label: "Nome" }, { label: "Email" }, { label: "" }];
 
 export function Clients() {
-  const [stateError, setStateError] = useState<{ message: string } | null>(
-    null
-  );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [clients, setClients] = useState<UserAPIResponse["user"][]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isClientsLoaded, setIsClientsLoaded] = useState(true);
 
-  async function fetchClients() {
+  async function fetchClientsData() {
     try {
-      setIsLoading(true);
+      setIsClientsLoaded(false);
+      setErrorMessage(null); // Limpa erros anteriores
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const response = await api.get("/clients");
+
       setClients(response.data);
     } catch (error) {
       console.log(error);
 
-      if (error instanceof AxiosError) {
-        return setStateError({ message: error.response?.data.message });
+      if (error instanceof AxiosError && error.response?.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage(
+          "Não foi possível carregar os clientes. Tente novamente mais tarde."
+        );
       }
-
-      return setStateError({
-        message: "Não foi possível carregar os técnicos",
-      });
     } finally {
-      setIsLoading(false);
+      setIsClientsLoaded(true);
     }
   }
 
   useEffect(() => {
-    fetchClients();
+    fetchClientsData();
   }, []);
 
   return (
     <div className="grid gap-6">
-      <h1 className="text-indigo-800 text-2xl font-bold">Clientes</h1>
+      <Header.Root>
+        <Header.Head>Clientes</Header.Head>
+      </Header.Root>
+
       <Table.Root>
         <Table.Head>
           {TABLE_HEADERS.map((header, index) => (
@@ -92,15 +98,9 @@ export function Clients() {
         </Table.Body>
       </Table.Root>
 
-      {stateError && (
-        <p className="text-lg text-red-600  ">{stateError?.message}</p>
-      )}
+      <ErrorMessage message={errorMessage} />
 
-      {isLoading && (
-        <p className="text-sm font-bold w-full flex justify-center text-gray-800 ">
-          Carregando...
-        </p>
-      )}
+      <Loading isLoaded={isClientsLoaded} />
     </div>
   );
 }
