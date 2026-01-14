@@ -2,11 +2,12 @@ import { classMerge } from "../utils/classMerge";
 
 type Props = React.ComponentProps<"h1"> & {
   username?: string;
-  variant?: "base" | "small";
+  variant?: "base" | "medium" | "small";
 };
 
 const variants = {
   base: "h-10 w-10 text-sm text-gray-100",
+  medium: "h-7 w-7 text-xs text-gray-100",
   small: "h-5 w-5 text-[0.6rem] text-gray-100",
 };
 

@@ -61,9 +61,9 @@ export function Tickets() {
       <h1 className="text-indigo-800 text-2xl font-bold">Chamados</h1>
       <Table.Root>
         <Table.Head>
-          {TABLE_HEADERS.map((header) => (
+          {TABLE_HEADERS.map((header, index) => (
             <th
-              key={header.label}
+              key={index}
               className={classMerge(
                 header.inResponsive
                   ? "table-cell w-[29%] lg:w-auto"
