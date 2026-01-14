@@ -5,10 +5,13 @@ import { PenLine } from "lucide-react";
 import { classMerge } from "../utils/classMerge";
 import { api } from "../services/api";
 
+import { Header } from "../components/Header/Index";
 import { Table } from "../components/Table/Index";
-import { Tag } from "../components/Tag";
 import { ProfileIcon } from "../components/ProfileIcon";
+import { Tag } from "../components/Tag";
 import { Button } from "../components/Button";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { Loading } from "../components/Loading";
 
 const TABLE_HEADERS = [
   { label: "Nome", inResponsive: true },
@@ -18,43 +21,45 @@ const TABLE_HEADERS = [
 ];
 
 export function Experts() {
-  const [stateError, setStateError] = useState<{ message: string } | null>(
-    null
-  );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [experts, setExperts] = useState<UserAPIResponse["user"][]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isExpertsLoaded, setIsExpertsLoaded] = useState(true);
 
-  async function fetchExperts() {
+  async function fetchExpertsData() {
     try {
-      setIsLoading(true);
+      setIsExpertsLoaded(false);
+      setErrorMessage(null); // Limpa erros anteriores
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const response = await api.get("/experts");
+      const experts = await api.get("/experts");
 
-      setExperts(response.data);
+      setExperts(experts.data);
     } catch (error) {
       console.log(error);
 
-      if (error instanceof AxiosError) {
-        return setStateError({ message: error.response?.data.message });
+      if (error instanceof AxiosError && error.response?.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage(
+          "Não foi possível carregar os técnicos. Tente novamente mais tarde."
+        );
       }
-
-      return setStateError({
-        message: "Não foi possível carregar os técnicos",
-      });
     } finally {
-      setIsLoading(false);
+      setIsExpertsLoaded(true);
     }
   }
 
   useEffect(() => {
-    fetchExperts();
+    fetchExpertsData();
   }, []);
 
   return (
     <div className="grid gap-6">
-      <h1 className="text-indigo-800 text-2xl font-bold">Técnicos</h1>
+      <Header.Root>
+        <Header.Head>Técnicos</Header.Head>
+      </Header.Root>
+
       <Table.Root>
         <Table.Head>
           {TABLE_HEADERS.map((header, index) => (
@@ -64,7 +69,7 @@ export function Experts() {
                 header.inResponsive
                   ? "table-cell lg:w-auto"
                   : "hidden lg:table-cell ",
-                  header.label === "" && "w-[12%] lg:w-[1%]",
+                header.label === "" && "w-[12%] lg:w-[1%]",
                 "px-3"
               )}
             >
@@ -107,15 +112,9 @@ export function Experts() {
         </Table.Body>
       </Table.Root>
 
-      {stateError && (
-        <p className="text-lg text-red-600  ">{stateError?.message}</p>
-      )}
+      <ErrorMessage message={errorMessage} />
 
-      {isLoading && (
-        <p className="text-sm font-bold w-full flex justify-center text-gray-800 ">
-          Carregando...
-        </p>
-      )}
+      <Loading isLoaded={isExpertsLoaded} />
     </div>
   );
 }
