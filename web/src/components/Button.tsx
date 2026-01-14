@@ -1,12 +1,12 @@
 import { classMerge } from "../utils/classMerge";
 
-type Props = React.ComponentProps<"button"> & {
+type ButtonProps = React.ComponentProps<"button"> & {
   isLoading?: boolean;
   color?: "primary" | "secondary" | "link";
   size?: "base" | "small" | "icon" | "iconSmall";
 };
 
-const variants = {
+const buttonStyleVariants = {
   color: {
     primary: "bg-gray-800 text-gray-100 hover:bg-gray-900 ",
     secondary: "bg-gray-300 text-gray-800 hover:bg-gray-400 hover:text-gray-900",
@@ -28,15 +28,15 @@ export function Button({
   color = "primary",
   size = "base",
   ...rest
-}: Props) {
+}: ButtonProps) {
   return (
     <button
       type={type}
       disabled={isLoading}
       className={classMerge(
         "rounded-md transition ease-linear font-bold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75",
-        variants.size[size],
-        variants.color[color],
+        buttonStyleVariants.size[size],
+        buttonStyleVariants.color[color],
         isLoading && "cursor-progress",
         className
       )}
