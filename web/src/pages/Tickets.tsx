@@ -7,11 +7,14 @@ import { classMerge } from "../utils/classMerge";
 import { formatCurrency } from "../utils/formatCurrency";
 import { formatDateTime } from "../utils/formatDateTime";
 
+import { Header } from "../components/Header/Index";
 import { PenLine } from "lucide-react";
 import { Table } from "../components/Table/Index";
 import { Tag } from "../components/Tag";
 import { ProfileIcon } from "../components/ProfileIcon";
 import { Button } from "../components/Button";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { Loading } from "../components/Loading";
 
 const TABLE_HEADERS = [
   { label: "Atualizado em", inResponsive: true },
@@ -25,17 +28,16 @@ const TABLE_HEADERS = [
 ];
 
 export function Tickets() {
-  const [stateError, setStateError] = useState<{ message: string } | null>(
-    null
-  );
+const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [tickets, setTickets] = useState<TicketAPIResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  async function fetchTickets() {
+  async function fetchTicketsData() {
     try {
       setIsLoading(true);
+      setErrorMessage(null); // Limpa erros anteriores
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -45,25 +47,28 @@ export function Tickets() {
     } catch (error) {
       console.log(error);
 
-      if (error instanceof AxiosError) {
-        return setStateError({ message: error.response?.data.message });
+      if (error instanceof AxiosError && error.response?.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage(
+          "Não foi possível carregar os chamados. Tente novamente mais tarde."
+        );
       }
-
-      return setStateError({
-        message: "Não foi possível carregar os chamados",
-      });
     } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchTickets();
+    fetchTicketsData();
   }, []);
 
   return (
     <div className="grid gap-6">
-      <h1 className="text-indigo-800 text-2xl font-bold">Chamados</h1>
+       <Header.Root>
+        <Header.Head>Chamados</Header.Head>
+      </Header.Root>
+
       <Table.Root>
         <Table.Head>
           {TABLE_HEADERS.map((header, index) => (
@@ -140,15 +145,9 @@ export function Tickets() {
         </Table.Body>
       </Table.Root>
 
-      {stateError && (
-        <p className="text-lg text-red-600  ">{stateError?.message}</p>
-      )}
+      <ErrorMessage message={errorMessage} />
 
-      {isLoading && (
-        <p className="text-sm font-bold w-full flex justify-center text-gray-800 ">
-          Carregando...
-        </p>
-      )}
+      <Loading isLoading={isLoading} />
     </div>
   );
 }

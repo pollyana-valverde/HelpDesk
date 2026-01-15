@@ -23,11 +23,11 @@ const TABLE_HEADERS = [
 export function Experts() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [experts, setExperts] = useState<UserAPIResponse["user"][]>([]);
-  const [isExpertsLoaded, setIsExpertsLoaded] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function fetchExpertsData() {
     try {
-      setIsExpertsLoaded(false);
+      setIsLoading(true);
       setErrorMessage(null); // Limpa erros anteriores
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -46,7 +46,7 @@ export function Experts() {
         );
       }
     } finally {
-      setIsExpertsLoaded(true);
+      setIsLoading(false);
     }
   }
 
@@ -114,7 +114,7 @@ export function Experts() {
 
       <ErrorMessage message={errorMessage} />
 
-      <Loading isLoaded={isExpertsLoaded} />
+      <Loading isLoading={isLoading} />
     </div>
   );
 }
