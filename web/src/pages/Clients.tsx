@@ -17,11 +17,11 @@ const TABLE_HEADERS = [{ label: "Nome" }, { label: "Email" }, { label: "" }];
 export function Clients() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [clients, setClients] = useState<UserAPIResponse["user"][]>([]);
-  const [isClientsLoaded, setIsClientsLoaded] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function fetchClientsData() {
     try {
-      setIsClientsLoaded(false);
+      setIsLoading(true);
       setErrorMessage(null); // Limpa erros anteriores
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -40,7 +40,7 @@ export function Clients() {
         );
       }
     } finally {
-      setIsClientsLoaded(true);
+      setIsLoading(false);
     }
   }
 
@@ -100,7 +100,7 @@ export function Clients() {
 
       <ErrorMessage message={errorMessage} />
 
-      <Loading isLoaded={isClientsLoaded} />
+      <Loading isLoading={isLoading} />
     </div>
   );
 }
