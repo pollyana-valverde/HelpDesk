@@ -1,11 +1,14 @@
-export function Loading({ isLoaded }: { isLoaded?: boolean }) {
-  if (isLoaded) {
-    return null;
-  }
+type LoadingProps = {
+  isLoading: boolean;
+};
 
-  return (
-    <div className="flex items-center justify-center h-full w-full">
-      <p className="text-sm font-bold text-gray-800">Carregando...</p>
-    </div>
-  );
+export function Loading({ isLoading }: LoadingProps) {
+  if (isLoading) {
+    return (
+      <p className="text-sm font-bold w-full flex justify-center text-gray-800 ">
+        Carregando...
+      </p>
+    );
+  }
+  return null;
 }
