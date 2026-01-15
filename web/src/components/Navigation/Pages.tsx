@@ -9,7 +9,7 @@ import { MenuIcon, X } from "lucide-react";
 import { Menu } from "../Menu/Index";
 
 export function NavigationPages(props: React.ComponentProps<"div">) {
-  const { isPagesMenuClosed, togglePagesMenu } = useNavigation();
+  const { isPagesMenuOpen, togglePagesMenu } = useNavigation();
   const { session } = useAuth();
   const location = useLocation();
 
@@ -30,16 +30,16 @@ export function NavigationPages(props: React.ComponentProps<"div">) {
         className="bg-gray-800 text-gray-100 h-10 w-10 flex items-center justify-center rounded-md cursor-pointer md:hidden"
         onClick={togglePagesMenu}
       >
-        {isPagesMenuClosed ? (
-          <MenuIcon className="w-5 h-5" />
-        ) : (
+        {isPagesMenuOpen ? (
           <X className="w-5 h-5" />
+        ) : (
+          <MenuIcon className="w-5 h-5" />
         )}
       </div>
 
       {/* Menu Mobile */}
       <Menu.Root
-        isMenuClosed={isPagesMenuClosed}
+        isMenuOpen={isPagesMenuOpen}
         className="w-auto left-6 right-6 md:hidden"
       >
         <Menu.Title>Menu</Menu.Title>

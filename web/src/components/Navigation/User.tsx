@@ -7,7 +7,7 @@ import { LogOut, CircleUser } from "lucide-react";
 import { Menu } from "../Menu/Index";
 
 export function NavigationUser(props: React.ComponentProps<"div">) {
-  const { isUserMenuClosed, toggleUserMenu } = useNavigation();
+  const { isUserMenuOpen, toggleUserMenu } = useNavigation();
   const { session, logout } = useAuth();
 
   return (
@@ -29,7 +29,7 @@ export function NavigationUser(props: React.ComponentProps<"div">) {
 
       {/* User Menu */}
       <Menu.Root
-        isMenuClosed={isUserMenuClosed}
+        isMenuOpen={isUserMenuOpen}
         className="w-2/3 right-6 md:w-50 md:bottom-1 md:top-auto md:left-51"
       >
         <Menu.Title>Opções</Menu.Title>
