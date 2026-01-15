@@ -2,19 +2,19 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { AxiosError } from "axios";
 
-import { api } from "../services/api";
-import { classMerge } from "../utils/classMerge";
-import { formatCurrency } from "../utils/formatCurrency";
-import { formatDateTime } from "../utils/formatDateTime";
+import { api } from "../../services/api";
+import { classMerge } from "../../utils/classMerge";
+import { formatCurrency } from "../../utils/formatCurrency";
+import { formatDateTime } from "../../utils/formatDateTime";
 
-import { Header } from "../components/Header/Index";
+import { Header } from "../../components/Header/Index";
 import { PenLine } from "lucide-react";
-import { Table } from "../components/Table/Index";
-import { Tag } from "../components/Tag";
-import { ProfileIcon } from "../components/ProfileIcon";
-import { Button } from "../components/Button";
-import { ErrorMessage } from "../components/ErrorMessage";
-import { Loading } from "../components/Loading";
+import { Table } from "../../components/Table/Index";
+import { Tag } from "../../components/Tag";
+import { ProfileIcon } from "../../components/ProfileIcon";
+import { Button } from "../../components/Button";
+import { ErrorMessage } from "../../components/ErrorMessage";
+import { Loading } from "../../components/Loading";
 
 const TABLE_HEADERS = [
   { label: "Atualizado em", inResponsive: true },
@@ -27,8 +27,8 @@ const TABLE_HEADERS = [
   { label: "", inResponsive: true },
 ];
 
-export function Tickets() {
-const [errorMessage, setErrorMessage] = useState<string | null>(null);
+export function TicketList() {
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [tickets, setTickets] = useState<TicketAPIResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,7 +65,7 @@ const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   return (
     <div className="grid gap-6">
-       <Header.Root>
+      <Header.Root>
         <Header.Head>Chamados</Header.Head>
       </Header.Root>
 
@@ -111,14 +111,20 @@ const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
               <Table.Cell className="lg:table-cell hidden">
                 <div className="flex gap-2">
-                  <ProfileIcon username={ticket.client.name} sizeVariant="small" />
+                  <ProfileIcon
+                    username={ticket.client.name}
+                    sizeVariant="small"
+                  />
                   <h2 className="text-sm">{ticket.client.name}</h2>
                 </div>
               </Table.Cell>
 
               <Table.Cell className="hidden lg:table-cell">
                 <div className="flex gap-2">
-                  <ProfileIcon username={ticket.expert.name} sizeVariant="small" />
+                  <ProfileIcon
+                    username={ticket.expert.name}
+                    sizeVariant="small"
+                  />
                   <h2 className="text-sm">{ticket.expert.name}</h2>
                 </div>
               </Table.Cell>

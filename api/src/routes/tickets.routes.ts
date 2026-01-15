@@ -13,7 +13,7 @@ ticketsRoutes.get("/:id/show", verifyAuthorization(["admin", "expert", "client"]
 ticketsRoutes.get("/client", verifyAuthorization(["client"]), ticketsController.showClientTickets);
 ticketsRoutes.get("/expert", verifyAuthorization(["expert"]), ticketsController.showExpertTickets);
 
-ticketsRoutes.patch("/:id/status", verifyAuthorization(["admin", "expert"]), ticketsController.updateStatus);
+ticketsRoutes.patch("/:id/update-status", verifyAuthorization(["admin", "expert"]), ticketsController.updateStatus);
 ticketsRoutes.patch("/:id/services", verifyAuthorization(["expert"]), ticketsController.additionalServices);
 ticketsRoutes.delete("/:id/services", verifyAuthorization(["expert"]), ticketsController.deleteAdditionalServices);
 

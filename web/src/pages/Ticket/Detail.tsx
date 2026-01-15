@@ -2,28 +2,29 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { AxiosError } from "axios";
 
-import { api } from "../services/api";
-import { formatCurrency } from "../utils/formatCurrency";
-import { formatDateTime } from "../utils/formatDateTime";
+import { api } from "../../services/api";
+import { formatCurrency } from "../../utils/formatCurrency";
+import { formatDateTime } from "../../utils/formatDateTime";
 
 import { Clock2, CircleCheckBig } from "lucide-react";
-import { Header } from "../components/Header/Index";
-import { Button } from "../components/Button";
-import { Tag } from "../components/Tag";
-import { ProfileIcon } from "../components/ProfileIcon";
+import { Header } from "../../components/Header/Index";
+import { Button } from "../../components/Button";
+import { Tag } from "../../components/Tag";
+import { ProfileIcon } from "../../components/ProfileIcon";
+import { ErrorMessage } from "../../components/ErrorMessage";
+import { Loading } from "../../components/Loading";
 
 export function TicketDetail() {
   const { id } = useParams();
 
-  const [stateError, setStateError] = useState<{ message: string } | null>(
-    null
-  );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [ticket, setTicket] = useState<TicketAPIResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   async function fetchTicketDetail() {
     try {
-      setIsLoading(true);
+       setIsLoading(true);
+      setErrorMessage(null); // Limpa erros anteriores
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -33,13 +34,13 @@ export function TicketDetail() {
     } catch (error) {
       console.log(error);
 
-      if (error instanceof AxiosError) {
-        return setStateError({ message: error.response?.data.message });
+       if (error instanceof AxiosError && error.response?.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage(
+          "Não foi possível carregar este chamado. Tente novamente mais tarde."
+        );
       }
-
-      return setStateError({
-        message: "Não foi possível carregar os chamados",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -49,15 +50,31 @@ export function TicketDetail() {
     fetchTicketDetail();
   }, [id]);
 
+  async function updateTicketStatus(status: string) {
+    try {
+      setIsLoading(true);
+
+      await api.patch(`/tickets/${id}/update-status`, { status });
+
+      // Recarrega os detalhes do chamado após a atualização
+      await fetchTicketDetail();
+    } catch (error) {
+      console.log(error);
+
+      setErrorMessage("Não foi possível atualizar o status deste chamado");
+    } finally {
+      setIsLoading(false);
+    }
+  }
   return (
     <div className="grid gap-4 md:gap-6 max-w-250 m-auto">
       <Header.Root>
         <Header.Head goBack>Chamado detalhado</Header.Head>
         <Header.Action>
-          <Button color="secondary">
+          <Button color="secondary" onClick={() => updateTicketStatus("in_progress")}>
             <Clock2 className="h-4.5 w-4.5" /> Em atendimento
           </Button>
-          <Button color="secondary">
+          <Button color="secondary" onClick={() => updateTicketStatus("closed")}>
             <CircleCheckBig className="h-4.5 w-4.5" /> Encerrado
           </Button>
         </Header.Action>
@@ -175,15 +192,9 @@ export function TicketDetail() {
         </div>
       )}
 
-      {stateError && (
-        <p className="text-lg text-red-600">{stateError?.message}</p>
-      )}
+      <ErrorMessage message={errorMessage} />
 
-      {isLoading && (
-        <p className="text-sm font-bold w-full flex justify-center text-gray-800 ">
-          Carregando...
-        </p>
-      )}
+      <Loading isLoading={isLoading} />
     </div>
   );
 }

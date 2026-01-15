@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
 
 import { PenLine } from "lucide-react";
-import { classMerge } from "../utils/classMerge";
-import { api } from "../services/api";
+import { classMerge } from "../../utils/classMerge";
+import { api } from "../../services/api";
 
-import { Header } from "../components/Header/Index";
-import { Table } from "../components/Table/Index";
-import { ProfileIcon } from "../components/ProfileIcon";
-import { Tag } from "../components/Tag";
-import { Button } from "../components/Button";
+import { Header } from "../../components/Header/Index";
+import { Table } from "../../components/Table/Index";
+import { ProfileIcon } from "../../components/ProfileIcon";
+import { Tag } from "../../components/Tag";
+import { Button } from "../../components/Button";
 import { Plus } from "lucide-react";
-import { ErrorMessage } from "../components/ErrorMessage";
-import { Loading } from "../components/Loading";
+import { ErrorMessage } from "../../components/ErrorMessage";
+import { Loading } from "../../components/Loading";
 
 const TABLE_HEADERS = [
   { label: "Nome", inResponsive: true },
@@ -21,7 +21,7 @@ const TABLE_HEADERS = [
   { label: "", inResponsive: true },
 ];
 
-export function Experts() {
+export function ExpertList() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [experts, setExperts] = useState<UserAPIResponse["user"][]>([]);
   const [isLoading, setIsLoading] = useState(false);

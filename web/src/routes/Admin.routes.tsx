@@ -2,9 +2,8 @@ import { Route, Routes } from "react-router";
 
 import { AppLayout } from "../layout/App.layout";
 
-import { Tickets } from "../pages/Tickets";
-import { TicketDetail } from "../pages/TicketDetail";
-import { Experts } from "../pages/Experts";
+import { Ticket } from "../pages/Ticket/Index";
+import { Expert } from "../pages/Expert/Index";
 import { Services } from "../pages/Services";
 import { Clients } from "../pages/Clients";
 
@@ -12,9 +11,9 @@ export function AdminRoutes() {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-        <Route index element={<Tickets />} />
-        <Route path="/tickets/:id/detail" element={<TicketDetail />} />
-        <Route path="/experts" element={<Experts />} />
+        <Route index element={<Ticket.List />} />
+        <Route path="/tickets/:id/detail" element={<Ticket.Detail />} />
+        <Route path="/experts" element={<Expert.List />} />
         <Route path="/clients" element={<Clients />} />
         <Route path="/services" element={<Services />} />
       </Route>
