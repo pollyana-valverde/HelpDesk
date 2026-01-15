@@ -10,6 +10,7 @@ import { Table } from "../components/Table/Index";
 import { ProfileIcon } from "../components/ProfileIcon";
 import { Tag } from "../components/Tag";
 import { Button } from "../components/Button";
+import { Plus } from "lucide-react";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { Loading } from "../components/Loading";
 
@@ -56,8 +57,14 @@ export function Experts() {
 
   return (
     <div className="grid gap-6">
-      <Header.Root>
+      <Header.Root className="flex">
         <Header.Head>Técnicos</Header.Head>
+        <Header.Action>
+          <Button>
+            <Plus className="h-4.5 w-4.5" />{" "}
+            <h2 className="hidden md:flex">Novo</h2>
+          </Button>
+        </Header.Action>
       </Header.Root>
 
       <Table.Root>

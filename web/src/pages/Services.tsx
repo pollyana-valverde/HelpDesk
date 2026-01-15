@@ -9,7 +9,7 @@ import { Header } from "../components/Header/Index";
 import { Table } from "../components/Table/Index";
 import { Tag } from "../components/Tag";
 import { Button } from "../components/Button";
-import { PenLine, Ban, CircleCheck } from "lucide-react";
+import { PenLine, Ban, CircleCheck, Plus } from "lucide-react";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { Loading } from "../components/Loading";
 
@@ -30,7 +30,7 @@ export function Services() {
       setIsLoading(true);
       setErrorMessage(null); // Limpa erros anteriores
 
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const services = await api.get("/services");
 
@@ -57,8 +57,14 @@ export function Services() {
 
   return (
     <div className="grid gap-6">
-      <Header.Root>
+      <Header.Root className="flex">
         <Header.Head>Serviços</Header.Head>
+        <Header.Action>
+          <Button>
+            <Plus className="h-4.5 w-4.5" />{" "}
+            <h2 className="hidden md:flex">Novo</h2>
+          </Button>
+        </Header.Action>
       </Header.Root>
 
       <Table.Root>
