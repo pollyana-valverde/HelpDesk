@@ -13,9 +13,11 @@ import { Tag } from "../../components/Tag";
 import { ProfileIcon } from "../../components/ProfileIcon";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { Loading } from "../../components/Loading";
+import { useAuth } from "../../hooks/useAuth";
 
 export function TicketDetail() {
   const { id } = useParams();
+  const { session } = useAuth();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [ticket, setTicket] = useState<TicketAPIResponse | null>(null);
@@ -23,7 +25,7 @@ export function TicketDetail() {
 
   async function fetchTicketDetail() {
     try {
-       setIsLoading(true);
+      setIsLoading(true);
       setErrorMessage(null); // Limpa erros anteriores
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -34,7 +36,7 @@ export function TicketDetail() {
     } catch (error) {
       console.log(error);
 
-       if (error instanceof AxiosError && error.response?.data.message) {
+      if (error instanceof AxiosError && error.response?.data.message) {
         setErrorMessage(error.response.data.message);
       } else {
         setErrorMessage(
@@ -71,12 +73,36 @@ export function TicketDetail() {
       <Header.Root>
         <Header.Head goBack>Chamado detalhado</Header.Head>
         <Header.Action>
-          <Button color="secondary" onClick={() => updateTicketStatus("in_progress")}>
-            <Clock2 className="h-4.5 w-4.5" /> Em atendimento
-          </Button>
-          <Button color="secondary" onClick={() => updateTicketStatus("closed")}>
-            <CircleCheckBig className="h-4.5 w-4.5" /> Encerrado
-          </Button>
+          {session?.user.role === "admin" && (
+            <>
+              <Button
+                color="secondary"
+                onClick={() => updateTicketStatus("in_progress")}
+              >
+                <Clock2 className="h-4.5 w-4.5" /> Em atendimento
+              </Button>
+              <Button
+                color="secondary"
+                onClick={() => updateTicketStatus("closed")}
+              >
+                <CircleCheckBig className="h-4.5 w-4.5" /> Encerrado
+              </Button>
+            </>
+          )}
+
+          {session?.user.role === "expert" && (
+            <>
+              <Button
+                color="secondary"
+                onClick={() => updateTicketStatus("closed")}
+              >
+                <CircleCheckBig className="h-4.5 w-4.5" /> Encerrar
+              </Button>
+              <Button onClick={() => updateTicketStatus("in_progress")}>
+                <Clock2 className="h-4.5 w-4.5" /> Iniciar atendimento
+              </Button>
+            </>
+          )}
         </Header.Action>
       </Header.Root>
 
@@ -132,7 +158,10 @@ export function TicketDetail() {
             <div className="grid gap-2">
               <span className="text-xs text-gray-400 font-bold">Cliente</span>
               <div className="flex gap-2">
-                <ProfileIcon username={ticket.client.name} sizeVariant="small" />
+                <ProfileIcon
+                  username={ticket.client.name}
+                  sizeVariant="small"
+                />
                 <p className="text-sm text-gray-800">{ticket.client.name}</p>
               </div>
             </div>
@@ -144,7 +173,10 @@ export function TicketDetail() {
                 Técnico responsável
               </span>
               <div className="flex gap-2 items-center">
-                <ProfileIcon username={ticket.expert.name} sizeVariant="medium" />
+                <ProfileIcon
+                  username={ticket.expert.name}
+                  sizeVariant="medium"
+                />
                 <div>
                   <p className="text-sm text-gray-800">{ticket.expert.name}</p>
                   <p className="text-xs text-gray-500">{ticket.expert.email}</p>
