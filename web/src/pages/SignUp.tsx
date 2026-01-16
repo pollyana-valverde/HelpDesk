@@ -49,7 +49,7 @@ export function SignUp() {
     try {
       setIsLoading(true);
 
-      await api.post("clients", data);
+      await api.post("/clients", data);
 
       if (
         confirm(

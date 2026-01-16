@@ -39,7 +39,7 @@ function ensureAuthenticated(
   } catch (error) {
     console.log(error);
     
-    throw new AppError("Invalid JWT token", 401);
+    throw new AppError("Token inválido ou expirado", 401);
   }
 }
 
