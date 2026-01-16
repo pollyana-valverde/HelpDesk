@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { AxiosError } from "axios";
+import { useApiMutation, useApiQuery } from "../../hooks/api/";
 
-import { api } from "../../services/api";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDateTime } from "../../utils/formatDateTime";
 
@@ -18,57 +16,15 @@ import { useAuth } from "../../hooks/useAuth";
 export function TicketDetail() {
   const { id } = useParams();
   const { session } = useAuth();
-
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [ticket, setTicket] = useState<TicketAPIResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function fetchTicketDetail() {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null); // Limpa erros anteriores
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const response = await api.get(`/tickets/${id}/show`);
-
-      setTicket(response.data);
-    } catch (error) {
-      console.log(error);
-
-      if (error instanceof AxiosError && error.response?.data.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage(
-          "Não foi possível carregar este chamado. Tente novamente mais tarde."
-        );
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchTicketDetail();
-  }, [id]);
+  const { mutate, error: mutationError } = useApiMutation();
+  const {data: ticket, error: queryError, isLoading, refetchData} = useApiQuery<TicketAPIResponse | null>(`/tickets/${id}/show-detail`);
 
   async function updateTicketStatus(status: string) {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null);
+    await mutate(`/tickets/${id}/update-status`, "PATCH", { status });
 
-      await api.patch(`/tickets/${id}/update-status`, { status });
-
-      // Recarrega os detalhes do chamado após a atualização
-      await fetchTicketDetail();
-    } catch (error) {
-      console.log(error);
-
-      setErrorMessage("Não foi possível atualizar o status deste chamado");
-    } finally {
-      setIsLoading(false);
-    }
+    await refetchData();
   }
+
   return (
     <div className="grid gap-4 md:gap-6 max-w-250 m-auto">
       <Header.Root>
@@ -225,7 +181,7 @@ export function TicketDetail() {
         </div>
       )}
 
-      <ErrorMessage message={errorMessage} />
+      <ErrorMessage message={queryError || mutationError} />
 
       <Loading isLoading={isLoading} />
     </div>

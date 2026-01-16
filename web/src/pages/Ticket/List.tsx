@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useQuery } from "../../hooks/useQuery";
+import { useApiQuery } from "../../hooks/api";
 
 import { classMerge } from "../../utils/classMerge";
 import { formatCurrency } from "../../utils/formatCurrency";
@@ -14,6 +13,7 @@ import { ProfileIcon } from "../../components/ProfileIcon";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { Loading } from "../../components/Loading";
+import { useCallback } from "react";
 
 const TABLE_HEADERS = [
   { label: "Atualizado em", inResponsive: true },
@@ -27,20 +27,17 @@ const TABLE_HEADERS = [
 ];
 
 export function TicketList() {
-  const navigate = useNavigate();
+  const selectTickets = useCallback(
+    (responseData: { tickets: TicketAPIResponse[] }) => responseData.tickets,
+    []
+  );
   const {
     data: tickets,
     error,
     isLoading,
-    request,
-  } = useQuery<TicketAPIResponse[]>();
-
-  useEffect(() => {
-    request(
-      "/tickets",
-      (responseData) => responseData.tickets
-    );
-  }, [request]);
+  } = useApiQuery<TicketAPIResponse[]>("/tickets", selectTickets);
+  
+  const navigate = useNavigate();
 
   return (
     <div className="grid gap-6">
