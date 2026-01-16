@@ -1,4 +1,3 @@
-import React from "react";
 import { classMerge } from "../../utils/classMerge";
 
 export function HeaderRoot({

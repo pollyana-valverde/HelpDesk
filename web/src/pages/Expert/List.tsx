@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { useApiQuery } from "../../hooks/api";
 
 import { PenLine } from "lucide-react";
@@ -20,6 +21,7 @@ const TABLE_HEADERS = [
 ];
 
 export function ExpertList() {
+  const navigate = useNavigate()
   const { data: experts, error, isLoading } = useApiQuery<UserAPIResponse["user"][]>("/experts");
 
   return (
@@ -27,7 +29,7 @@ export function ExpertList() {
       <Header.Root className="flex">
         <Header.Head>Técnicos</Header.Head>
         <Header.Action>
-          <Button>
+          <Button onClick={() => navigate("/experts/new")}>
             <Plus className="h-4.5 w-4.5" />{" "}
             <h2 className="hidden md:flex">Novo</h2>
           </Button>

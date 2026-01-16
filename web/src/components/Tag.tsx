@@ -11,6 +11,7 @@ type TagProps = React.ComponentProps<"span"> & {
     | "in_progress"
     | "closed"
     | "danger";
+    isSelected?: boolean;
 };
 
 const stylesVariants = {
@@ -26,7 +27,10 @@ const stylesVariants = {
   },
 };
 
-export function Tag({ children, styleVariant = "default", className, ...rest }: TagProps) {
+export function Tag({ children, styleVariant = "default", isSelected = false, className, ...rest }: TagProps) {
+  if(isSelected) {
+    styleVariant = "selected";
+  }
   return (
     <span
       className={classMerge(
