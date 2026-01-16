@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
-import { AxiosError } from "axios";
+import { useApiQuery } from "../../hooks/api";
 
 import { PenLine } from "lucide-react";
 import { classMerge } from "../../utils/classMerge";
-import { api } from "../../services/api";
 
 import { Header } from "../../components/Header/Index";
 import { Table } from "../../components/Table/Index";
@@ -22,38 +20,7 @@ const TABLE_HEADERS = [
 ];
 
 export function ExpertList() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [experts, setExperts] = useState<UserAPIResponse["user"][]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function fetchExpertsData() {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null); // Limpa erros anteriores
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const experts = await api.get("/experts");
-
-      setExperts(experts.data);
-    } catch (error) {
-      console.log(error);
-
-      if (error instanceof AxiosError && error.response?.data.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage(
-          "Não foi possível carregar os técnicos. Tente novamente mais tarde."
-        );
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchExpertsData();
-  }, []);
+  const { data: experts, error, isLoading } = useApiQuery<UserAPIResponse["user"][]>("/experts");
 
   return (
     <div className="grid gap-6">
@@ -86,7 +53,7 @@ export function ExpertList() {
         </Table.Head>
 
         <Table.Body>
-          {experts.map((expert) => (
+          {experts?.map((expert) => (
             <Table.Row key={expert.id}>
               <Table.Cell>
                 <div className="flex gap-3 items-center">
@@ -119,7 +86,7 @@ export function ExpertList() {
         </Table.Body>
       </Table.Root>
 
-      <ErrorMessage message={errorMessage} />
+      <ErrorMessage message={error} />
 
       <Loading isLoading={isLoading} />
     </div>
