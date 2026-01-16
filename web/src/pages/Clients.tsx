@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
-import { AxiosError } from "axios";
+import { useApiQuery } from "../hooks/api";
 
 import { PenLine, Trash } from "lucide-react";
 import { classMerge } from "../utils/classMerge";
-import { api } from "../services/api";
 
 import { Header } from "../components/Header/Index";
 import { Table } from "../components/Table/Index";
@@ -15,38 +13,11 @@ import { Loading } from "../components/Loading";
 const TABLE_HEADERS = [{ label: "Nome" }, { label: "Email" }, { label: "" }];
 
 export function Clients() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [clients, setClients] = useState<UserAPIResponse["user"][]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function fetchClientsData() {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null); // Limpa erros anteriores
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const clients = await api.get("/clients");
-
-      setClients(clients.data);
-    } catch (error) {
-      console.log(error);
-
-      if (error instanceof AxiosError && error.response?.data.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage(
-          "Não foi possível carregar os clientes. Tente novamente mais tarde."
-        );
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchClientsData();
-  }, []);
+  const {
+    data: clients,
+    error,
+    isLoading,
+  } = useApiQuery<UserAPIResponse["user"][]>("/clients");
 
   return (
     <div className="grid gap-6">
@@ -70,7 +41,7 @@ export function Clients() {
         </Table.Head>
 
         <Table.Body>
-          {clients.map((client) => (
+          {clients?.map((client) => (
             <Table.Row key={client.id}>
               <Table.Cell>
                 <div className="flex gap-3 items-center">
@@ -98,7 +69,7 @@ export function Clients() {
         </Table.Body>
       </Table.Root>
 
-      <ErrorMessage message={errorMessage} />
+      <ErrorMessage message={error} />
 
       <Loading isLoading={isLoading} />
     </div>

@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import { AxiosError } from "axios";
+import { useApiQuery } from "../hooks/api";
 
 import { classMerge } from "../utils/classMerge";
-import { api } from "../services/api";
 import { formatCurrency } from "../utils/formatCurrency";
 
 import { Header } from "../components/Header/Index";
@@ -21,39 +19,7 @@ const TABLE_HEADERS = [
 ];
 
 export function Services() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [services, setServices] = useState<ServiceApiResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function fetchServicesData() {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null); // Limpa erros anteriores
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const services = await api.get("/services");
-
-      console.log(services.data);
-      setServices(services.data);
-    } catch (error) {
-      console.log(error);
-
-      if (error instanceof AxiosError && error.response?.data.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage(
-          "Não foi possível carregar os serviços. Tente novamente mais tarde."
-        );
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchServicesData();
-  }, []);
+  const { data: services, error, isLoading } = useApiQuery<ServiceApiResponse[]>("/services");
 
   return (
     <div className="grid gap-6">
@@ -85,7 +51,7 @@ export function Services() {
         </Table.Head>
 
         <Table.Body>
-          {services.map((service) => (
+          {services?.map((service) => (
             <Table.Row key={service.id}>
               <Table.Cell className="text-sm font-bold">
                 {service.name}
@@ -138,7 +104,7 @@ export function Services() {
         </Table.Body>
       </Table.Root>
 
-      <ErrorMessage message={errorMessage} />
+      <ErrorMessage message={error} />
 
       <Loading isLoading={isLoading} />
     </div>
