@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { AxiosError } from "axios";
+import { useQuery } from "../../hooks/useQuery";
 
-import { api } from "../../services/api";
 import { classMerge } from "../../utils/classMerge";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDateTime } from "../../utils/formatDateTime";
@@ -28,40 +27,20 @@ const TABLE_HEADERS = [
 ];
 
 export function TicketList() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [tickets, setTickets] = useState<TicketAPIResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
   const navigate = useNavigate();
-
-  async function fetchTicketsData() {
-    try {
-      setIsLoading(true);
-      setErrorMessage(null); // Limpa erros anteriores
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const response = await api.get("/tickets");
-
-      setTickets(response.data.tickets);
-    } catch (error) {
-      console.log(error);
-
-      if (error instanceof AxiosError && error.response?.data.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage(
-          "Não foi possível carregar os chamados. Tente novamente mais tarde."
-        );
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  const {
+    data: tickets,
+    error,
+    isLoading,
+    request,
+  } = useQuery<TicketAPIResponse[]>();
 
   useEffect(() => {
-    fetchTicketsData();
-  }, []);
+    request(
+      "/tickets",
+      (responseData) => responseData.tickets
+    );
+  }, [request]);
 
   return (
     <div className="grid gap-6">
@@ -90,7 +69,7 @@ export function TicketList() {
         </Table.Head>
 
         <Table.Body>
-          {tickets.map((ticket) => (
+          {tickets?.map((ticket) => (
             <Table.Row key={ticket.id}>
               <Table.Cell className="text-xs">
                 {formatDateTime(ticket.updatedAt)}
@@ -146,12 +125,12 @@ export function TicketList() {
                   <PenLine className="h-3.5 w-3.5" />
                 </Button>
               </Table.Cell>
-            </Table.Row> 
+            </Table.Row>
           ))}
         </Table.Body>
       </Table.Root>
 
-      <ErrorMessage message={errorMessage} />
+      <ErrorMessage message={error} />
 
       <Loading isLoading={isLoading} />
     </div>
