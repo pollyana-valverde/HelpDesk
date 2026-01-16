@@ -146,7 +146,7 @@ export function TicketList() {
                   <PenLine className="h-3.5 w-3.5" />
                 </Button>
               </Table.Cell>
-            </Table.Row>
+            </Table.Row> 
           ))}
         </Table.Body>
       </Table.Root>

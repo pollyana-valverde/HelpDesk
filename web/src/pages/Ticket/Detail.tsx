@@ -55,6 +55,7 @@ export function TicketDetail() {
   async function updateTicketStatus(status: string) {
     try {
       setIsLoading(true);
+      setErrorMessage(null);
 
       await api.patch(`/tickets/${id}/update-status`, { status });
 
