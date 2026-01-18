@@ -53,7 +53,7 @@ export function SignUp() {
 
       if (
         confirm(
-          "Cadastro realizado com sucesso! Deseja ir para a tela de login?"
+          "Cadastro realizado com sucesso! Deseja ir para a tela de login?",
         )
       ) {
         navigate("/");
