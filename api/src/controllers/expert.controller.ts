@@ -67,6 +67,30 @@ class ExpertController {
     return response.json(experts);
   }
 
+  async show (request: Request, response: Response) {
+    const paramsSchema = z.object({
+      id: z.uuid("ID inválido"),
+    });
+
+    const { id } = paramsSchema.parse(request.params);
+
+    const expert = await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        availableHours: true,
+      },
+    });
+
+    if (!expert) {
+      throw new AppError("Técnico não encontrado", 404);
+    }
+
+    return response.json(expert);
+  }
+
   async update(request: Request, response: Response) {
     const paramsSchema = z.object({
       id: z.uuid("ID inválido"),
