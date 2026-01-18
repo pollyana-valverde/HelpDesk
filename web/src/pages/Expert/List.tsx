@@ -79,7 +79,7 @@ export function ExpertList() {
               </Table.Cell>
 
               <Table.Cell>
-                <Button color="secondary" size="iconSmall">
+                <Button color="secondary" size="iconSmall" onClick={() => navigate(`/experts/${expert.id}/edit`)}>
                   <PenLine className="h-3.5 w-3.5" />
                 </Button>
               </Table.Cell>

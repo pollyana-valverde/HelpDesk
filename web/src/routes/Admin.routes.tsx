@@ -15,6 +15,7 @@ export function AdminRoutes() {
         <Route path="/tickets/:id/detail" element={<Ticket.Detail />} />
         <Route path="/experts" element={<Expert.List />} />
         <Route path="/experts/new" element={<Expert.Form />} />
+        <Route path="/experts/:id/edit" element={<Expert.Form />} />
         <Route path="/clients" element={<Clients />} />
         <Route path="/services" element={<Services />} />
       </Route>
