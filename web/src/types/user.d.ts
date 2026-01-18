@@ -11,3 +11,10 @@ type UserAPIResponse = {
     role: UserAPIRole
   };
 };
+
+ type UserData = {
+  name: string;
+  email: string;
+  password?: string;
+  availableHours: string[];
+};
