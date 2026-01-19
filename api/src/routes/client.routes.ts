@@ -13,8 +13,8 @@ clientRoutes.post("/", clientController.create);
 clientRoutes.use(ensureAuthenticated);
 
 clientRoutes.get("/", verifyAuthorization(["admin"]), clientController.index);
-clientRoutes.put("/:id", verifyAuthorization(["admin", "client"]), clientController.update);
-clientRoutes.patch("/password", verifyAuthorization([ "client"]), clientController.updatePassword);
-clientRoutes.delete("/:id", verifyAuthorization(["admin", "client"]), clientController.delete);
+clientRoutes.put("/:id/update", verifyAuthorization(["admin", "client"]), clientController.update);
+clientRoutes.patch("/update-password", verifyAuthorization([ "client"]), clientController.updatePassword);
+clientRoutes.delete("/:id/delete", verifyAuthorization(["admin", "client"]), clientController.delete);
 
 export { clientRoutes };

@@ -1,30 +1,21 @@
-import { useApiQuery } from "../hooks/api";
-
 import { PenLine, Trash } from "lucide-react";
-import { classMerge } from "../utils/classMerge";
+import { classMerge } from "../../utils/classMerge";
 
-import { Header } from "../components/Header/Index";
-import { Table } from "../components/Table/Index";
-import { ProfileIcon } from "../components/ProfileIcon";
-import { Button } from "../components/Button";
-import { ErrorMessage } from "../components/ErrorMessage";
-import { Loading } from "../components/Loading";
+import { Table } from "../../components/Table/Index";
+import { ProfileIcon } from "../../components/ProfileIcon";
+import { Button } from "../../components/Button";
+
+type ClientListProps = {
+    clients: UserAPIResponse["user"][];
+    onModalDelete: (client: { id: string; name: string; }) => void;
+    onModalEdit: (client: { id: string }) => void;
+};
 
 const TABLE_HEADERS = [{ label: "Nome" }, { label: "Email" }, { label: "" }];
 
-export function Clients() {
-  const {
-    data: clients,
-    error,
-    isLoading,
-  } = useApiQuery<UserAPIResponse["user"][]>("/clients");
-
+export function ClientList({ clients, onModalDelete, onModalEdit }: ClientListProps) {
   return (
     <div className="grid gap-6">
-      <Header.Root>
-        <Header.Head>Clientes</Header.Head>
-      </Header.Root>
-
       <Table.Root>
         <Table.Head>
           {TABLE_HEADERS.map((header, index) => (
@@ -56,10 +47,10 @@ export function Clients() {
 
               <Table.Cell>
                 <div className="flex gap-2">
-                  <Button color="secondary" size="iconSmall">
+                  <Button color="secondary" size="iconSmall" onClick={() => onModalDelete({ id: client.id, name: client.name })}>
                     <Trash className="h-3.5 w-3.5 text-red-700" />
                   </Button>
-                  <Button color="secondary" size="iconSmall">
+                  <Button color="secondary" size="iconSmall" onClick={() => onModalEdit({ id: client.id })}>
                     <PenLine className="h-3.5 w-3.5" />
                   </Button>
                 </div>
@@ -68,10 +59,6 @@ export function Clients() {
           ))}
         </Table.Body>
       </Table.Root>
-
-      <ErrorMessage message={error} />
-
-      <Loading isLoading={isLoading} />
     </div>
   );
 }

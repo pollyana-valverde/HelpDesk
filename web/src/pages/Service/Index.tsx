@@ -5,7 +5,7 @@ import { ErrorMessage } from "../../components/ErrorMessage";
 import { Loading } from "../../components/Loading";
 import { ServiceList } from "./List";
 import { ServiceForm } from "./Form";
-import { useServices } from "../../hooks/pages/useService"; 
+import { useServices } from "../../hooks/pages/useServices"; 
 
 export function Services() {
   const {
