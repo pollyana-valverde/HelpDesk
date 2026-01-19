@@ -20,7 +20,7 @@ const TABLE_HEADERS = [
   { label: "Id" },
   { label: "Título e serviço", inResponsive: true },
   { label: "Valor total" },
-  { label: "Cliente" },
+  { label: "Técnico" },
   { label: "Status", inResponsive: true },
   { label: "", inResponsive: true },
 ];
