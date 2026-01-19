@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useApiMutation, useApiQuery } from "../../hooks/api/";
+import { useApiMutation, useApiQuery } from "../../hooks/api";
 
 import { Header } from "../../components/Header/Index";
 import { Button } from "../../components/Button";
