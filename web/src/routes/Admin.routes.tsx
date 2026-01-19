@@ -4,7 +4,7 @@ import { AppLayout } from "../layout/App.layout";
 
 import { Ticket } from "../pages/Ticket/Index";
 import { Expert } from "../pages/Expert/Index";
-import { Services } from "../pages/Services";
+import { Services } from "../pages/Services/Index";
 import { Clients } from "../pages/Clients";
 
 export function AdminRoutes() {
