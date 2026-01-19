@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -6,7 +7,6 @@ import { Modal } from "../../components/Modal/Index";
 import { ProfileIcon } from "../../components/ProfileIcon";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-import { useEffect } from "react";
 
 type FormData = {
   name: string;

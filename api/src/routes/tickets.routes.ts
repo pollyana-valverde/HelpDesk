@@ -6,7 +6,7 @@ import { verifyAuthorization } from "../middlewares/verify-authorization";
 const ticketsRoutes = Router();
 const ticketsController = new TicketsController();
 
-ticketsRoutes.post("/", verifyAuthorization(["client"]), ticketsController.create);
+ticketsRoutes.post("/new", verifyAuthorization(["client"]), ticketsController.create);
 ticketsRoutes.get("/", verifyAuthorization(["admin"]), ticketsController.index);
 ticketsRoutes.get("/:id/show-detail", verifyAuthorization(["admin", "expert", "client"]), ticketsController.show);
 

@@ -10,21 +10,25 @@ class TicketsController {
     const bodySchema = z.object({
       title: z.string().min(3, "O título é obrigatório"),
       description: z.string().min(10, "A descrição é obrigatória"),
-      expertId: z.uuid("ID do técnico inválido"),
       serviceIds: z
-        .array(z.uuid("ID de serviço inválido"))
+        .array(z.uuid("ID de serviço inválido"), "IDs de serviço inválidos")
         .min(1, "Selecione pelo menos um serviço"),
     });
 
-    const { title, description, expertId, serviceIds } = bodySchema.parse(
+    const { title, description, serviceIds } = bodySchema.parse(
       request.body
     );
 
-    const expert = await prisma.user.findUnique({ where: { id: expertId } });
+    const experts = await prisma.user.findMany({
+      where: { role: UserRole.expert },
+    });
 
-    if (!expert || expert.role !== UserRole.expert) {
-      throw new AppError("Técnico não encontrado ou inválido.", 404);
+    if (experts.length === 0) {
+      throw new AppError("Nenhum técnico disponível encontrado.", 404);
     }
+
+    const randomIndex = Math.floor(Math.random() * experts.length);
+    const randomExpert = experts[randomIndex];
 
     const servicesCount = await prisma.service.count({
       where: {
@@ -42,7 +46,7 @@ class TicketsController {
         title,
         description,
         clientId: request.user?.id!,
-        expertId,
+        expertId: randomExpert.id,
         services: {
           connect: serviceIds.map((id) => ({ id })),
         },

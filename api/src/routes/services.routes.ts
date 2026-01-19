@@ -6,10 +6,8 @@ import { verifyAuthorization } from "../middlewares/verify-authorization.js";
 const servicesRoutes = Router();
 const servicesController = new ServicesController();
 
-servicesRoutes.use(verifyAuthorization(["admin"]));
-
-servicesRoutes.post("/", servicesController.create);
-servicesRoutes.get("/", servicesController.index);
-servicesRoutes.put("/:id/update", servicesController.update);
+servicesRoutes.post("/", verifyAuthorization(["admin"]), servicesController.create);
+servicesRoutes.get("/", verifyAuthorization(["admin", "client", "expert"]), servicesController.index);
+servicesRoutes.put("/:id/update", verifyAuthorization(["admin"]), servicesController.update);
 
 export { servicesRoutes };

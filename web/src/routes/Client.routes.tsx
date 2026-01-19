@@ -10,6 +10,7 @@ export function ClientRoutes() {
       <Route path="/" element={<AppLayout />}>
         <Route index element={<Ticket.ClientList />} />
         <Route path="/tickets/:id/detail" element={<Ticket.Detail />} />
+        <Route path="/tickets/new" element={<Ticket.Form />} />
       </Route>
     </Routes>
   );
