@@ -33,10 +33,10 @@ export function DeleteClientModal({
         </p>
       </Modal.Body>
       <Modal.Footer>
-          <Button color="secondary" onClick={onClose} >
+          <Button color="secondary" className="md:w-full" onClick={onClose} >
             Cancelar
           </Button>
-          <Button onClick={onDelete} isLoading={isLoading}>Sim, excluir</Button>
+          <Button onClick={onDelete} className="md:w-full" isLoading={isLoading}>Sim, excluir</Button>
       </Modal.Footer>
     </Modal.Root>
   );
