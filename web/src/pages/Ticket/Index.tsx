@@ -1,7 +1,9 @@
-import { TicketList } from "./List";
+import { TicketAdminList } from "./AdminList";
+import { TicketClientList } from "./ClientList";
 import { TicketDetail } from "./Detail";
 
 export const Ticket = {
-  List: TicketList,
+  AdminList: TicketAdminList,
+  ClientList: TicketClientList,
   Detail: TicketDetail,
 };

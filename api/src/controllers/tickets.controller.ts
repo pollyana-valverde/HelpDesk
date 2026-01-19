@@ -141,7 +141,19 @@ class TicketsController {
       orderBy: { createdAt: "desc" },
     });
 
-    return response.json(tickets);
+     if (!tickets || tickets.length === 0) {
+      throw new AppError("Chamados não encontrados.", 404);
+    }
+
+    const ticketsWithTotalPrice = tickets.map((ticket) => {
+      const totalPrice = ticket.services.reduce(
+        (sum, service) => sum + Number(service.price),
+        0
+      );
+      return { ...ticket, totalPrice };
+    });
+
+    return response.json({ tickets: ticketsWithTotalPrice});
   }
 
   async showExpertTickets(request: Request, response: Response) {

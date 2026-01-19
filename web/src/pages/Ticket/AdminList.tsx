@@ -26,7 +26,7 @@ const TABLE_HEADERS = [
   { label: "", inResponsive: true },
 ];
 
-export function TicketList() {
+export function TicketAdminList() {
   const selectTickets = useCallback(
     (responseData: { tickets: TicketAPIResponse[] }) => responseData.tickets,
     []

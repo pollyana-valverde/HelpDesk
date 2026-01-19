@@ -11,7 +11,7 @@ export function AdminRoutes() {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-        <Route index element={<Ticket.List />} />
+        <Route index element={<Ticket.AdminList />} />
         <Route path="/tickets/:id/detail" element={<Ticket.Detail />} />
         <Route path="/experts" element={<Expert.List />} />
         <Route path="/experts/new" element={<Expert.Form />} />
