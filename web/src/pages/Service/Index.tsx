@@ -1,4 +1,3 @@
-// src/pages/Service/Index.tsx (Refatorado com o hook)
 import { Header } from "../../components/Header/Index";
 import { Button } from "../../components/Button";
 import { Plus } from "lucide-react";
@@ -9,7 +8,6 @@ import { ServiceForm } from "./Form";
 import { useServices } from "../../hooks/pages/useService"; 
 
 export function Services() {
-  // Chama o hook para obter toda a lógica e estado
   const {
     services,
     error,
@@ -24,7 +22,6 @@ export function Services() {
     onSubmit,
   } = useServices();
 
-  // O JSX permanece o mesmo, apenas conectando os pontos
   return (
     <div className="grid gap-6">
       <Header.Root className="flex">
