@@ -5,7 +5,9 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "build": "tsup src --out-dir build --format esm --clean",
+    "start": "node build/server.js"
   },
   "author": "Pollyana Valverde",
   "license": "ISC",
@@ -32,6 +34,7 @@
     "prisma": "^7.2.0",
     "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"
