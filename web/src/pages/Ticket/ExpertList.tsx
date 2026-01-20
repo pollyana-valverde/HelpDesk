@@ -1,4 +1,4 @@
-import { useApiQuery } from "../../hooks/api";
+import { useApiQuery, useApiMutation } from "../../hooks/api";
 import { useMemo, useCallback } from "react";
 
 import { Header } from "../../components/Header/Index";
@@ -21,7 +21,15 @@ export function TicketExpertList() {
     data: tickets,
     error,
     isLoading,
+    refetchData,
   } = useApiQuery<TicketAPIResponse[]>("/tickets/expert", selectTickets);
+  const { mutate } = useApiMutation();
+
+  async function updateTicketStatus(id: string, status: TicketAPIStatus) {
+    await mutate(`/tickets/${id}/update-status`, "PATCH", { status });
+
+    await refetchData();
+  }
 
   const groupedTicketsByStatus = useMemo(() => {
     if (!tickets) {
@@ -52,6 +60,7 @@ export function TicketExpertList() {
             title={title}
             status={status}
             tickets={groupedTicketsByStatus[status] || []}
+            onUpdateStatus={updateTicketStatus}
           />
         ))}
       </div>
@@ -61,4 +70,3 @@ export function TicketExpertList() {
     </div>
   );
 }
-

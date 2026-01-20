@@ -6,13 +6,14 @@ import { Card } from "../Card/Index";
 import { Tag } from "../Tag";
 import { ProfileIcon } from "../ProfileIcon";
 import { Button } from "../Button";
-import { PenLine, CircleCheck } from "lucide-react";
+import { PenLine, CircleCheck, Clock2 } from "lucide-react";
 
 type TicketCardProps = {
   ticket: TicketAPIResponse;
+  onUpdateStatus?: (id: string, status: TicketAPIStatus) => Promise<void>;
 };
 
-export function TicketCard({ ticket }: TicketCardProps) {
+export function TicketCard({ ticket, onUpdateStatus }: TicketCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -30,10 +31,19 @@ export function TicketCard({ ticket }: TicketCardProps) {
             >
               <PenLine className="h-3.5 w-3.5" />
             </Button>
-            <Button size="small">
-              <CircleCheck className="h-3.5 w-3.5" />
-              Encerrar
-            </Button>
+            {ticket.status === "in_progress" && (
+              <Button size="small" onClick={() => onUpdateStatus && onUpdateStatus(ticket.id, "closed")}>
+                <CircleCheck className="h-3.5 w-3.5" />
+                Encerrar
+              </Button>
+            )}
+
+            {ticket.status === "open" && (
+              <Button size="small" onClick={() => onUpdateStatus && onUpdateStatus(ticket.id, "in_progress")}>
+                <Clock2 className="h-3.5 w-3.5" />
+                Iniciar
+              </Button>
+            )}
           </div>
         </div>
         <h2 className="font-bold text-gray-900 truncate">{ticket.title}</h2>

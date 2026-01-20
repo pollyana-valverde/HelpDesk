@@ -5,9 +5,10 @@ type TicketLaneProps = {
   title: string;
   status: TicketAPIStatus;
   tickets: TicketAPIResponse[];
+  onUpdateStatus?: (id: string, status: TicketAPIStatus) => Promise<void>;
 };
 
-export function TicketLane({ title, status, tickets }: TicketLaneProps) {
+export function TicketLane({ title, status, tickets, onUpdateStatus }: TicketLaneProps) {
   if (tickets.length === 0) {
     return null;
   }
@@ -17,7 +18,7 @@ export function TicketLane({ title, status, tickets }: TicketLaneProps) {
       <Tag styleVariant={status}>{title}</Tag>
       <div className="flex gap-4 overflow-x-auto w-full">
         {tickets.map((ticket) => (
-          <TicketCard key={ticket.id} ticket={ticket} />
+          <TicketCard key={ticket.id} ticket={ticket} onUpdateStatus={onUpdateStatus} />
         ))}
       </div>
     </div>
