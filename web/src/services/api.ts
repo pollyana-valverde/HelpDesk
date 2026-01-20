@@ -6,7 +6,7 @@ export type { Method };
 const LOCAL_STORAGE_KEY = "@helpdesk";
 
 const api = axios.create({
-  baseURL: "http://localhost:3333",
+  baseURL: "https://helpdesk-zrh4.onrender.com",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
