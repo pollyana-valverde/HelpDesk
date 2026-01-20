@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useApiMutation, useApiQuery } from "../../hooks/api/";
 import { useAuth } from "../../hooks/useAuth";
+import { useServices } from "../../hooks/pages/useServices";
 
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDateTime } from "../../utils/formatDateTime";
 
-import { Clock2, CircleCheckBig } from "lucide-react";
+import { Clock2, CircleCheckBig, Plus, Trash } from "lucide-react";
 import { Header } from "../../components/Header/Index";
 import { Card } from "../../components/Card/Index";
 import { Button } from "../../components/Button";
@@ -13,6 +14,7 @@ import { Tag } from "../../components/Tag";
 import { ProfileIcon } from "../../components/ProfileIcon";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { Loading } from "../../components/Loading";
+import { TicketAdditionalService } from "./AdditionalService";
 
 export function TicketDetail() {
   const { id } = useParams();
@@ -25,8 +27,34 @@ export function TicketDetail() {
     refetchData,
   } = useApiQuery<TicketAPIResponse | null>(`/tickets/${id}/show-detail`);
 
+  const {
+    services,
+    error: servicesError,
+    isLoading: servicesLoading,
+    isModalOpen: isAdditionalServiceModalOpen,
+    closeModal: closeAdditionalServiceModal,
+    openModal: openAdditionalServiceModal,
+  } = useServices();
+
   async function updateTicketStatus(status: string) {
     await mutate(`/tickets/${id}/update-status`, "PATCH", { status });
+
+    await refetchData();
+  }
+
+  async function handleAdditionalService(serviceIds: string[]) {
+    await mutate(`/tickets/${id}/add-services`, "PATCH", {
+      serviceIds: serviceIds,
+    });
+
+    await refetchData();
+    closeAdditionalServiceModal();
+  }
+
+  async function handleDeleteAdditionalService(serviceIds: string[]) {
+    await mutate(`/tickets/${id}/delete-services`, "DELETE", {
+      serviceIds: serviceIds,
+    });
 
     await refetchData();
   }
@@ -71,70 +99,112 @@ export function TicketDetail() {
 
       {ticket && (
         <div className="grid md:flex gap-4 md:gap-6">
-          <Card.Root className="flex-2 gap-5">
-            <Card.Head className="gap-0.5">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-gray-500">
-                  {ticket.id}
-                </span>
-                <Tag styleVariant={ticket.status} className="capitalize">
-                  {ticket.status.replace("_", " ")}
-                </Tag>
-              </div>
-              <h2 className="font-bold text-gray-800">{ticket.title}</h2>
-            </Card.Head>
-
-            <Card.Body className="gap-5">
-              <div className="grid gap-0.5">
-                <span className="text-xs text-gray-400 font-bold">
-                  Descrição
-                </span>
-                <p className="text-sm text-gray-800">{ticket.description}</p>
-              </div>
-
-              <div className="grid gap-0.5">
-                <span className="text-xs text-gray-400 font-bold">
-                  Categoria
-                </span>
-                <p className="text-sm text-gray-800">
-                  {ticket.services?.map((service) => service.name)}
-                </p>
-              </div>
-
-              <div className="flex gap-2">
-                <div className="grid gap-0.5 flex-1">
-                  <span className="text-xs text-gray-400 font-bold">
-                    Criado em
+          <div className="grid flex-2 md:gap-3 gap-4">
+            <Card.Root className="gap-5">
+              <Card.Head className="gap-0.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-500">
+                    {ticket.id}
                   </span>
+                  <Tag styleVariant={ticket.status} className="capitalize">
+                    {ticket.status.replace("_", " ")}
+                  </Tag>
+                </div>
+                <h2 className="font-bold text-gray-800">{ticket.title}</h2>
+              </Card.Head>
 
-                  <p className="text-xs text-gray-800">
-                    {formatDateTime(ticket.createdAt)}
+              <Card.Body className="gap-5">
+                <div className="grid gap-0.5">
+                  <span className="text-xs text-gray-400 font-bold">
+                    Descrição
+                  </span>
+                  <p className="text-sm text-gray-800">{ticket.description}</p>
+                </div>
+
+                <div className="grid gap-0.5">
+                  <span className="text-xs text-gray-400 font-bold">
+                    Categoria
+                  </span>
+                  <p className="text-sm text-gray-800">
+                    {ticket.services?.map((service) => service.name)}
                   </p>
                 </div>
 
-                <div className="grid gap-0.5 flex-1">
-                  <span className="text-xs text-gray-400 font-bold">
-                    Atualizado em
-                  </span>
-
-                  <p className="text-xs text-gray-800">
-                    {formatDateTime(ticket.updatedAt)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-2">
-                <span className="text-xs text-gray-400 font-bold">Cliente</span>
                 <div className="flex gap-2">
-                  <ProfileIcon
-                    username={ticket.client.name}
-                    sizeVariant="small"
-                  />
-                  <p className="text-sm text-gray-800">{ticket.client.name}</p>
+                  <div className="grid gap-0.5 flex-1">
+                    <span className="text-xs text-gray-400 font-bold">
+                      Criado em
+                    </span>
+
+                    <p className="text-xs text-gray-800">
+                      {formatDateTime(ticket.createdAt)}
+                    </p>
+                  </div>
+
+                  <div className="grid gap-0.5 flex-1">
+                    <span className="text-xs text-gray-400 font-bold">
+                      Atualizado em
+                    </span>
+
+                    <p className="text-xs text-gray-800">
+                      {formatDateTime(ticket.updatedAt)}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Card.Body>
-          </Card.Root>
+
+                <div className="grid gap-2">
+                  <span className="text-xs text-gray-400 font-bold">
+                    Cliente
+                  </span>
+                  <div className="flex gap-2">
+                    <ProfileIcon
+                      username={ticket.client.name}
+                      sizeVariant="small"
+                    />
+                    <p className="text-sm text-gray-800">
+                      {ticket.client.name}
+                    </p>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card.Root>
+            <Card.Root className="gap-4">
+              <Card.Head>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-gray-400 font-bold">
+                    Serviços adicionais
+                  </span>
+                  <Button size="iconSmall" onClick={openAdditionalServiceModal}>
+                    <Plus className="w-3.5 h-3.5 text-gray-100" />
+                  </Button>
+                </div>
+              </Card.Head>
+              <Card.Body>
+                {ticket.services?.map((service, index) => (
+                  <div
+                    key={index}
+                    className="flex gap-6 items-center not-first:border-t not-first:pt-2 not-last:pb-2 border-gray-200"
+                  >
+                    <p className="text-xs font-bold text-gray-800 flex-1">
+                      {service.name}
+                    </p>
+                    <p className="text-xs text-gray-800">
+                      R${formatCurrency(service.price)}
+                    </p>
+                    <Button
+                      color="secondary"
+                      size="iconSmall"
+                      onClick={() =>
+                        handleDeleteAdditionalService([service.id])
+                      }
+                    >
+                      <Trash className="w-3.5 h-3.5 text-red-700" />
+                    </Button>
+                  </div>
+                ))}
+              </Card.Body>
+            </Card.Root>
+          </div>
 
           <Card.Root className="gap-8 flex-1 h-fit">
             <Card.Head className="gap-2">
@@ -154,33 +224,34 @@ export function TicketDetail() {
             </Card.Head>
 
             <Card.Body className="gap-4">
-              <div className="grid gap-0.5">
+              <div className="grid gap-2">
                 <span className="text-xs text-gray-400 font-bold">Valores</span>
                 <div className="flex justify-between">
                   <p className="text-xs text-gray-800">Preço base</p>
                   <p className="text-xs text-gray-800">
-                    R${" "}
-                    {ticket.services?.map((service) =>
-                      formatCurrency(service.price)
+                    R$
+                    {formatCurrency(
+                      ticket.services[ticket.services.length - 1].price,
                     )}
                   </p>
                 </div>
               </div>
 
-              <div className="grid gap-0.5">
+              <div className="grid gap-2">
                 <span className="text-xs text-gray-400 font-bold">
                   Adicionais
                 </span>
-                <div className="flex">
-                  <p className="text-xs text-gray-800 flex-1">
-                    {ticket.services?.map((service) => service.name)}
-                  </p>
-                  <p className="text-xs text-gray-800">
-                    R${" "}
-                    {ticket.services?.map((service) =>
-                      formatCurrency(service.price)
-                    )}
-                  </p>
+                <div className="grid gap-0.5">
+                  {ticket.services?.map((service) => (
+                    <div className="flex">
+                      <p className="text-xs text-gray-800 flex-1">
+                        {service.name}
+                      </p>
+                      <p className="text-xs text-gray-800">
+                        R${formatCurrency(service.price)}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -195,7 +266,15 @@ export function TicketDetail() {
         </div>
       )}
 
-      <ErrorMessage message={queryError || mutationError} />
+      <TicketAdditionalService
+        services={services}
+        isLoading={isLoading || servicesLoading}
+        isOpen={isAdditionalServiceModalOpen}
+        closeModal={closeAdditionalServiceModal}
+        onSubmit={handleAdditionalService}
+      />
+
+      <ErrorMessage message={queryError || mutationError || servicesError} />
 
       <Loading isLoading={isLoading} />
     </div>

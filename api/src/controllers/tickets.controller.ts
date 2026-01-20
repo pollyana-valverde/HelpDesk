@@ -117,7 +117,7 @@ class TicketsController {
       include: {
         client: { select: { name: true, email: true } },
         expert: { select: { name: true, email: true } },
-        services: { select: { name: true, price: true } },
+        services: { select: { id: true, name: true, price: true } },
       },
     });
 

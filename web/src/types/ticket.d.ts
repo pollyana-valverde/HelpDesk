@@ -20,6 +20,7 @@ type TicketAPIResponse = {
   };
   services: [
     {
+      id: string;
       name: string;
       price: number;
     }
