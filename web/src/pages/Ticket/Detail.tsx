@@ -168,42 +168,48 @@ export function TicketDetail() {
                 </div>
               </Card.Body>
             </Card.Root>
-            <Card.Root className="gap-4">
-              <Card.Head>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-gray-400 font-bold">
-                    Serviços adicionais
-                  </span>
-                  <Button size="iconSmall" onClick={openAdditionalServiceModal}>
-                    <Plus className="w-3.5 h-3.5 text-gray-100" />
-                  </Button>
-                </div>
-              </Card.Head>
-              <Card.Body>
-                {ticket.services?.map((service, index) => (
-                  <div
-                    key={index}
-                    className="flex gap-6 items-center not-first:border-t not-first:pt-2 not-last:pb-2 border-gray-200"
-                  >
-                    <p className="text-xs font-bold text-gray-800 flex-1">
-                      {service.name}
-                    </p>
-                    <p className="text-xs text-gray-800">
-                      R${formatCurrency(service.price)}
-                    </p>
+
+            {session?.user.role === "expert" && (
+              <Card.Root className="gap-4">
+                <Card.Head>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-gray-400 font-bold">
+                      Serviços adicionais
+                    </span>
                     <Button
-                      color="secondary"
                       size="iconSmall"
-                      onClick={() =>
-                        handleDeleteAdditionalService([service.id])
-                      }
+                      onClick={openAdditionalServiceModal}
                     >
-                      <Trash className="w-3.5 h-3.5 text-red-700" />
+                      <Plus className="w-3.5 h-3.5 text-gray-100" />
                     </Button>
                   </div>
-                ))}
-              </Card.Body>
-            </Card.Root>
+                </Card.Head>
+                <Card.Body>
+                  {ticket.services?.map((service, index) => (
+                    <div
+                      key={index}
+                      className="flex gap-6 items-center not-first:border-t not-first:pt-2 not-last:pb-2 border-gray-200"
+                    >
+                      <p className="text-xs font-bold text-gray-800 flex-1">
+                        {service.name}
+                      </p>
+                      <p className="text-xs text-gray-800">
+                        R${formatCurrency(service.price)}
+                      </p>
+                      <Button
+                        color="secondary"
+                        size="iconSmall"
+                        onClick={() =>
+                          handleDeleteAdditionalService([service.id])
+                        }
+                      >
+                        <Trash className="w-3.5 h-3.5 text-red-700" />
+                      </Button>
+                    </div>
+                  ))}
+                </Card.Body>
+              </Card.Root>
+            )}
           </div>
 
           <Card.Root className="gap-8 flex-1 h-fit">
