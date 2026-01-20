@@ -25,8 +25,8 @@ export function ExpertList() {
   const { data: experts, error, isLoading } = useApiQuery<UserAPIResponse["user"][]>("/experts");
 
   return (
-    <div className="grid gap-6">
-      <Header.Root className="flex">
+    <div className="grid gap-4">
+      <Header.Root className="flex items-end md:items-start">
         <Header.Head>Técnicos</Header.Head>
         <Header.Action>
           <Button onClick={() => navigate("/experts/new")}>

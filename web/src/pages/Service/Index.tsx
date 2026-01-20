@@ -23,8 +23,8 @@ export function Services() {
   } = useServices();
 
   return (
-    <div className="grid gap-6">
-      <Header.Root className="flex">
+    <div className="grid gap-4">
+      <Header.Root className="flex items-end md:items-start">
         <Header.Head>Serviços</Header.Head>
         <Header.Action>
           <Button onClick={openModal}>
