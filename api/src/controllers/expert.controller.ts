@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../database/prisma.js";
 import { UserRole } from "../../generated/prisma/enums.js";
 
-import { hash } from "bcrypt";
+import { hash, compare } from "bcrypt";
 import { z } from "zod";
 import { AppError } from "../utils/AppError.js";
 
@@ -27,7 +27,7 @@ class ExpertController {
     });
 
     const { name, email, password, availableHours } = bodySchema.parse(
-      request.body
+      request.body,
     );
 
     const userWithSameEmail = await prisma.user.findFirst({
@@ -61,13 +61,14 @@ class ExpertController {
         name: true,
         email: true,
         availableHours: true,
-      }, orderBy: { createdAt: "desc" },
+      },
+      orderBy: { createdAt: "desc" },
     });
 
     return response.json(experts);
   }
 
-  async show (request: Request, response: Response) {
+  async show(request: Request, response: Response) {
     const paramsSchema = z.object({
       id: z.uuid("ID inválido"),
     });
@@ -121,7 +122,7 @@ class ExpertController {
       if (userWithSameEmail && userWithSameEmail.id !== id) {
         throw new AppError(
           "Já existe um usuário cadastrado com esse email",
-          409
+          409,
         );
       }
     }
@@ -140,13 +141,30 @@ class ExpertController {
 
   async updatePassword(request: Request, response: Response) {
     const bodySchema = z.object({
-      password: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
+      currentPassword: z
+        .string()
+        .min(6, "A senha deve ter no mínimo 6 dígitos"),
+      newPassword: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
     });
 
     const { id } = request.user!;
-    const { password } = bodySchema.parse(request.body);
+    const { currentPassword, newPassword } = bodySchema.parse(request.body);
 
-    const hashedPassword = await hash(password, 10);
+    const expert = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!expert || expert.role !== UserRole.expert) {
+      throw new AppError("Técnico não encontrado", 404);
+    }
+
+    const passwordMatches = await compare(currentPassword, expert.password);
+
+    if (!passwordMatches) {
+      throw new AppError("Senha atual incorreta", 404);
+    }
+
+    const hashedPassword = await hash(newPassword, 10);
 
     await prisma.user.update({
       where: { id },
