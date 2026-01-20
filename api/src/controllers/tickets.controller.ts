@@ -172,7 +172,15 @@ class TicketsController {
       orderBy: { createdAt: "desc" },
     });
 
-    return response.json(tickets);
+    const ticketsWithTotalPrice = tickets.map((ticket) => {
+      const totalPrice = ticket.services.reduce(
+        (sum, service) => sum + Number(service.price),
+        0
+      );
+      return { ...ticket, totalPrice };
+    });
+
+    return response.json({ tickets: ticketsWithTotalPrice});
   }
 
   async updateStatus(request: Request, response: Response) {
