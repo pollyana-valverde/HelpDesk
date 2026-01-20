@@ -5,6 +5,8 @@ import { AppLayout } from "../layout/App.layout";
 import { Ticket } from "../pages/Ticket/Index";
 import { Profile } from "../pages/Profile/Index";
 
+import { NotFound } from "../pages/NotFound";
+
 export function ExpertRoutes() {
   return (
     <Routes>
@@ -13,6 +15,8 @@ export function ExpertRoutes() {
         <Route path="/tickets/:id/detail" element={<Ticket.Detail />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

@@ -5,6 +5,8 @@ import { AppLayout } from "../layout/App.layout";
 import { Ticket } from "../pages/Ticket/Index";
 import { Profile } from "../pages/Profile/Index";
 
+import { NotFound } from "../pages/NotFound";
+
 export function ClientRoutes() {
   return (
     <Routes>
@@ -14,6 +16,8 @@ export function ClientRoutes() {
         <Route path="/tickets/new" element={<Ticket.Form />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

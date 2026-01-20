@@ -7,6 +7,8 @@ import { Expert } from "../pages/Expert/Index";
 import { Services } from "../pages/Service/Index";
 import { Clients } from "../pages/Client/Index";
 
+import { NotFound } from "../pages/NotFound";
+
 export function AdminRoutes() {
   return (
     <Routes>
@@ -19,6 +21,8 @@ export function AdminRoutes() {
         <Route path="/clients" element={<Clients />} />
         <Route path="/services" element={<Services />} />
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
