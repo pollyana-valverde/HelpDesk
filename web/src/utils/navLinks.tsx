@@ -31,6 +31,12 @@ export const NAVLINKS: LinkData[] = [
     label: "Meus chamados",
     path: "/",
     icon: <ClipboardList className="w-5 h-5" />,
+    role: "expert",
+  },
+  {
+    label: "Meus chamados",
+    path: "/",
+    icon: <ClipboardList className="w-5 h-5" />,
     role: "client",
   },
   {
