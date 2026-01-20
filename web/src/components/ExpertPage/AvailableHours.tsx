@@ -1,8 +1,8 @@
 import { CircleAlert } from "lucide-react";
 import { Controller,type Control, type FieldErrors } from "react-hook-form";
-import { Card } from "../components/Card/Index";
-import { Tag } from "./Tag";
-import { AVAILABLE_HOURS } from "../utils/availableHours";
+import { Card } from "../../components/Card/Index";
+import { Tag } from "../Tag";
+import { AVAILABLE_HOURS } from "../../utils/availableHours";
 
 function handleHourSelection(fieldValue: string[], hour: string) {
   if (fieldValue.includes(hour)) {

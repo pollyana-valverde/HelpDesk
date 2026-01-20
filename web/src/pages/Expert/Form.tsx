@@ -9,8 +9,8 @@ import { z } from "zod";
 import { Header } from "../../components/Header/Index";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/ErrorMessage";
-import { PersonalData } from "../../components/PersonalData";
-import { AvailableHours } from "../../components/AvailableHours";
+import { PersonalData } from "../../components/ExpertPage/PersonalData";
+import { AvailableHours } from "../../components/ExpertPage/AvailableHours";
 
 export function ExpertForm() {
   const { id } = useParams();

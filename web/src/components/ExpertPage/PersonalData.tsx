@@ -1,7 +1,7 @@
 import { type Control, Controller,type FieldErrors } from "react-hook-form";
-import { Card } from "../components/Card/Index";
-import { Input } from "./Input";
-import { ProfileIcon } from "./ProfileIcon";
+import { Card } from "../../components/Card/Index";
+import { Input } from "../Input";
+import { ProfileIcon } from "../ProfileIcon";
 
 type PersonalDataProps = {
   id?: string;
