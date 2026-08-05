@@ -18,12 +18,11 @@ describe('Tickets', () => {
   let service2: any
 
   beforeEach(async () => {
-    // Criar usuários
     const hashedPassword = await hash('password123', 8)
     const clientEmail = generateUniqueEmail('client')
     const expertEmail = generateUniqueEmail('expert')
     const adminEmail = generateUniqueEmail('admin')
-    
+
     client = await prisma.user.create({
       data: {
         name: 'Client User',
@@ -52,21 +51,13 @@ describe('Tickets', () => {
       },
     })
 
-    // Criar serviços
     service1 = await prisma.service.create({
-      data: {
-        name: 'Service 1',
-        price: 100,
-      },
+      data: { name: 'Service 1', price: 100 },
     })
     service2 = await prisma.service.create({
-      data: {
-        name: 'Service 2',
-        price: 200,
-      },
+      data: { name: 'Service 2', price: 200 },
     })
 
-    // Gerar tokens diretamente para evitar inconsistências
     const secret = String(authConfig.jwt.secret)
     clientToken = jwt.sign({ role: 'client' }, secret, { subject: client.id })
     expertToken = jwt.sign({ role: 'expert' }, secret, { subject: expert.id })
@@ -75,12 +66,11 @@ describe('Tickets', () => {
 
   it('should create a ticket', async () => {
     const response = await request(app)
-      .post('/tickets')
+      .post('/tickets/new')
       .set('Authorization', `Bearer ${clientToken}`)
       .send({
         title: 'Test Ticket',
         description: 'This is a test ticket',
-        expertId: expert.id,
         serviceIds: [service1.id],
       })
 
@@ -90,7 +80,7 @@ describe('Tickets', () => {
     expect(response.body.services).toHaveLength(1)
   })
 
-  it('should list tickets', async () => {
+  it('should list tickets as admin', async () => {
     const response = await request(app)
       .get('/tickets')
       .set('Authorization', `Bearer ${adminToken}`)
@@ -100,14 +90,13 @@ describe('Tickets', () => {
     expect(Array.isArray(response.body.tickets)).toBe(true)
   })
 
-  it('should show a ticket', async () => {
+  it('should show a ticket detail', async () => {
     const createResponse = await request(app)
-      .post('/tickets')
+      .post('/tickets/new')
       .set('Authorization', `Bearer ${clientToken}`)
       .send({
         title: 'Show Ticket',
-        description: 'Description',
-        expertId: expert.id,
+        description: 'Description for show',
         serviceIds: [service1.id],
       })
 
@@ -116,7 +105,7 @@ describe('Tickets', () => {
     const ticketId = createResponse.body.id
 
     const response = await request(app)
-      .get(`/tickets/${ticketId}/show`)
+      .get(`/tickets/${ticketId}/show-detail`)
       .set('Authorization', `Bearer ${adminToken}`)
 
     expect(response.status).toBe(200)
@@ -125,12 +114,23 @@ describe('Tickets', () => {
   })
 
   it('should show client tickets', async () => {
+    // cria um ticket para que o endpoint não retorne 404
+    await request(app)
+      .post('/tickets/new')
+      .set('Authorization', `Bearer ${clientToken}`)
+      .send({
+        title: 'Client Ticket',
+        description: 'Ticket do client para listagem',
+        serviceIds: [service1.id],
+      })
+
     const response = await request(app)
       .get('/tickets/client')
       .set('Authorization', `Bearer ${clientToken}`)
 
     expect(response.status).toBe(200)
-    expect(Array.isArray(response.body)).toBe(true)
+    expect(response.body).toHaveProperty('tickets')
+    expect(Array.isArray(response.body.tickets)).toBe(true)
   })
 
   it('should show expert tickets', async () => {
@@ -139,30 +139,31 @@ describe('Tickets', () => {
       .set('Authorization', `Bearer ${expertToken}`)
 
     expect(response.status).toBe(200)
-    expect(Array.isArray(response.body)).toBe(true)
+    expect(response.body).toHaveProperty('tickets')
+    expect(Array.isArray(response.body.tickets)).toBe(true)
   })
 
   it('should update ticket status', async () => {
     const createResponse = await request(app)
-      .post('/tickets')
+      .post('/tickets/new')
       .set('Authorization', `Bearer ${clientToken}`)
       .send({
         title: 'Update Status',
-        description: 'Description',
-        expertId: expert.id,
+        description: 'Description for status update',
         serviceIds: [service1.id],
       })
 
     expect(createResponse.status).toBe(201)
 
     const ticketId = createResponse.body.id
+    const assignedExpertId = createResponse.body.expertId
+    const secret = String(authConfig.jwt.secret)
+    const assignedExpertToken = jwt.sign({ role: 'expert' }, secret, { subject: assignedExpertId })
 
     const response = await request(app)
-      .patch(`/tickets/${ticketId}/status`)
-      .set('Authorization', `Bearer ${expertToken}`)
-      .send({
-        status: 'in_progress',
-      })
+      .patch(`/tickets/${ticketId}/update-status`)
+      .set('Authorization', `Bearer ${assignedExpertToken}`)
+      .send({ status: 'in_progress' })
 
     expect(response.status).toBe(200)
     expect(response.body.status).toBe('in_progress')
@@ -170,23 +171,25 @@ describe('Tickets', () => {
 
   it('should add additional services', async () => {
     const createResponse = await request(app)
-      .post('/tickets')
+      .post('/tickets/new')
       .set('Authorization', `Bearer ${clientToken}`)
       .send({
         title: 'Add Services',
-        description: 'Description',
-        expertId: expert.id,
+        description: 'Description for adding services',
         serviceIds: [service1.id],
       })
+
     expect(createResponse.status).toBe(201)
+
     const ticketId = createResponse.body.id
+    const assignedExpertId = createResponse.body.expertId
+    const secret = String(authConfig.jwt.secret)
+    const assignedExpertToken = jwt.sign({ role: 'expert' }, secret, { subject: assignedExpertId })
 
     const response = await request(app)
-      .patch(`/tickets/${ticketId}/services`)
-      .set('Authorization', `Bearer ${expertToken}`)
-      .send({
-        serviceIds: [service2.id],
-      })
+      .patch(`/tickets/${ticketId}/add-services`)
+      .set('Authorization', `Bearer ${assignedExpertToken}`)
+      .send({ serviceIds: [service2.id] })
 
     expect(response.status).toBe(200)
     expect(response.body.services).toHaveLength(2)
@@ -194,23 +197,25 @@ describe('Tickets', () => {
 
   it('should delete additional services', async () => {
     const createResponse = await request(app)
-      .post('/tickets')
+      .post('/tickets/new')
       .set('Authorization', `Bearer ${clientToken}`)
       .send({
         title: 'Delete Services',
-        description: 'Description',
-        expertId: expert.id,
+        description: 'Description for deleting services',
         serviceIds: [service1.id, service2.id],
       })
+
     expect(createResponse.status).toBe(201)
+
     const ticketId = createResponse.body.id
+    const assignedExpertId = createResponse.body.expertId
+    const secret = String(authConfig.jwt.secret)
+    const assignedExpertToken = jwt.sign({ role: 'expert' }, secret, { subject: assignedExpertId })
 
     const response = await request(app)
-      .delete(`/tickets/${ticketId}/services`)
-      .set('Authorization', `Bearer ${expertToken}`)
-      .send({
-        serviceIds: [service2.id],
-      })
+      .delete(`/tickets/${ticketId}/delete-services`)
+      .set('Authorization', `Bearer ${assignedExpertToken}`)
+      .send({ serviceIds: [service2.id] })
 
     expect(response.status).toBe(200)
     expect(response.body.services).toHaveLength(1)
