@@ -6,7 +6,7 @@ export type { Method };
 const LOCAL_STORAGE_KEY = "@helpdesk";
 
 const api = axios.create({
-  baseURL: "https://help-desk-rho-one.vercel.app/",
+  baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:3333",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
