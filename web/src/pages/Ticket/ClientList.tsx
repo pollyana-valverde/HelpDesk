@@ -13,7 +13,7 @@ import { ProfileIcon } from "../../components/ProfileIcon";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { Loading } from "../../components/Loading";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 const TABLE_HEADERS = [
   { label: "Atualizado em", inResponsive: true },
@@ -37,10 +37,6 @@ export function TicketClientList() {
   } = useApiQuery<TicketAPIResponse[]>("/tickets/client", selectTickets);
   
   const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log(tickets);
-  }, [tickets]);
 
   return (
     <div className="grid gap-6">
