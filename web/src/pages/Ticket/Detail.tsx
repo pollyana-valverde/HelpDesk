@@ -242,7 +242,7 @@ export function TicketDetail() {
                   <p className="text-xs text-gray-800">
                     R$
                     {formatCurrency(
-                      ticket.services[ticket.services.length - 1].price,
+                      ticket.services[ticket.services.length - 1]?.price ?? 0,
                     )}
                   </p>
                 </div>

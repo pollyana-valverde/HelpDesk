@@ -348,6 +348,18 @@ class TicketsController {
       );
     }
 
+    const ticketWithServices = await prisma.ticket.findUnique({
+      where: { id },
+      select: { services: { select: { id: true } } },
+    });
+
+    if ((ticketWithServices?.services.length ?? 0) - serviceIds.length < 1) {
+      throw new AppError(
+        "Um chamado precisa ter ao menos um serviço vinculado.",
+        400
+      );
+    }
+
     const updatedTicket = await prisma.ticket.update({
       where: { id },
       data: {

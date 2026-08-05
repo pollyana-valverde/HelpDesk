@@ -81,7 +81,7 @@ export function TicketClientList() {
 
               <Table.Cell>
                 <h2 className="text-sm font-bold truncate">{ticket.title}</h2>
-                <p className="text-xs truncate">{ticket.services[0].name}</p>
+                <p className="text-xs truncate">{ticket.services[0]?.name}</p>
               </Table.Cell>
 
               <Table.Cell className="text-sm hidden lg:table-cell">
