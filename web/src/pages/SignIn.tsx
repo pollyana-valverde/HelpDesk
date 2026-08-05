@@ -64,7 +64,9 @@ export function SignIn() {
       }
 
       if (error instanceof AxiosError) {
-        console.log(error?.response?.data.message);
+        return setStateError({
+          message: error?.response?.data?.message ?? "Erro ao fazer login. Tente novamente.",
+        });
       }
 
       return setStateError({
