@@ -37,26 +37,31 @@ export function TicketDetail() {
   } = useServices();
 
   async function updateTicketStatus(status: string) {
-    await mutate(`/tickets/${id}/update-status`, "PATCH", { status });
-
-    await refetchData();
+    try {
+      await mutate(`/tickets/${id}/update-status`, "PATCH", { status });
+      await refetchData();
+    } catch {
+      // erro já está setado no hook
+    }
   }
 
   async function handleAdditionalService(serviceIds: string[]) {
-    await mutate(`/tickets/${id}/add-services`, "PATCH", {
-      serviceIds: serviceIds,
-    });
-
-    await refetchData();
-    closeAdditionalServiceModal();
+    try {
+      await mutate(`/tickets/${id}/add-services`, "PATCH", { serviceIds });
+      await refetchData();
+      closeAdditionalServiceModal();
+    } catch {
+      // erro já está setado no hook
+    }
   }
 
   async function handleDeleteAdditionalService(serviceIds: string[]) {
-    await mutate(`/tickets/${id}/delete-services`, "DELETE", {
-      serviceIds: serviceIds,
-    });
-
-    await refetchData();
+    try {
+      await mutate(`/tickets/${id}/delete-services`, "DELETE", { serviceIds });
+      await refetchData();
+    } catch {
+      // erro já está setado no hook
+    }
   }
 
   return (

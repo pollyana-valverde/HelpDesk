@@ -42,16 +42,24 @@ export function useClients() {
 
   async function handleDeleteClient() {
     if (!selectedClientId) return;
-    await mutate(`/clients/${selectedClientId}/delete`, "DELETE");
-    await refetchData();
-    closeModal();
+    try {
+      await mutate(`/clients/${selectedClientId}/delete`, "DELETE");
+      await refetchData();
+      closeModal();
+    } catch {
+      // erro já está setado no hook
+    }
   }
 
   async function handleEditClient(data: FormData) {
     if (!selectedClientId) return;
-    await mutate(`/clients/${selectedClientId}/update`, "PUT", data);
-    await refetchData();
-    closeModal();
+    try {
+      await mutate(`/clients/${selectedClientId}/update`, "PUT", data);
+      await refetchData();
+      closeModal();
+    } catch {
+      // erro já está setado no hook
+    }
   }
   
   return {
