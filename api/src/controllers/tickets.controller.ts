@@ -209,6 +209,10 @@ class TicketsController {
       throw new AppError("Chamado não encontrado.", 404);
     }
 
+    if (request.user!.role === "expert" && ticket.expertId !== request.user!.id) {
+      throw new AppError("Acesso negado.", 403);
+    }
+
     if (ticket.status === status) {
       throw new AppError(`Ticket is already '${status}'.`, 400);
     }
@@ -237,6 +241,10 @@ class TicketsController {
 
     if (!ticket) {
       throw new AppError("Chamado não encontrado.", 404);
+    }
+
+    if (request.user!.role === "expert" && ticket.expertId !== request.user!.id) {
+      throw new AppError("Acesso negado.", 403);
     }
 
     if (ticket.status === TicketStatus.closed) {
@@ -312,6 +320,10 @@ class TicketsController {
 
     if (!ticket) {
       throw new AppError("Chamado não encontrado.", 404);
+    }
+
+    if (request.user!.role === "expert" && ticket.expertId !== request.user!.id) {
+      throw new AppError("Acesso negado.", 403);
     }
 
     if (ticket.status === TicketStatus.closed) {
