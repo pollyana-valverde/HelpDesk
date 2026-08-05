@@ -36,14 +36,14 @@ A API é responsável por toda a lógica de negócio, autenticação e manipula�
     ```
 
 3.  **Configure as Variáveis de Ambiente:**
-    Crie um arquivo `.env` na raiz do diretório `api/` e adicione as seguintes variáveis, substituindo pelos seus valores. Você pode usar o arquivo `.env.example` como base.
+    Crie um arquivo `.env` na raiz do diretório `api/` e adicione as seguintes variáveis, substituindo pelos seus valores. Você pode usar o arquivo `.env-example` como base.
 
     ```ini
     # Porta da aplicação
     PORT=3333
 
-    # URL de conexão do MongoDB
-    DATABASE_URL=postgres+srv://<user>:<password>@<cluster-url>/helpdesk?retryWrites=true&w=majority
+    # URL de conexão do PostgreSQL
+    DATABASE_URL=postgresql://user:password@host:5432/helpdesk
 
     # Segredo para o JWT (Json Web Token)
     JWT_SECRET=seu_segredo_super_secreto
@@ -66,7 +66,7 @@ A API é responsável por toda a lógica de negócio, autenticação e manipula�
 
 A API está disponível publicamente no seguinte endereço:
 
--   **URL da API:** [https://api-helpdesk-v1.herokuapp.com](https://helpdesk-zrh4.onrender.com)
+-   **URL da API:** [https://helpdesk-zrh4.onrender.com](https://helpdesk-zrh4.onrender.com)
 
 ---
 
@@ -102,7 +102,7 @@ A interface web permite que os usuários interajam com o sistema de forma visual
 
 A aplicação web está disponível publicamente no seguinte endereço:
 
--   **URL do Frontend:** [https://helpdesk-reactjs.vercel.app](https://help-desk-rho-one.vercel.app/)
+-   **URL do Frontend:** [https://help-desk-rho-one.vercel.app](https://help-desk-rho-one.vercel.app)
 
 ---
 
