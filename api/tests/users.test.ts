@@ -82,7 +82,7 @@ describe('Users', () => {
     })
 
     const response = await request(app)
-      .put(`/clients/${client.id}`)
+      .put(`/clients/${client.id}/update`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({
         name: 'Updated Client',
@@ -104,7 +104,7 @@ describe('Users', () => {
     })
 
     const response = await request(app)
-      .put(`/experts/${expert.id}`)
+      .put(`/experts/${expert.id}/update`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({
         name: 'Updated Expert',
@@ -126,7 +126,7 @@ describe('Users', () => {
     })
 
     const response = await request(app)
-      .delete(`/clients/${client.id}`)
+      .delete(`/clients/${client.id}/delete`)
       .set('Authorization', `Bearer ${adminToken}`)
 
     expect(response.status).toBe(200)
