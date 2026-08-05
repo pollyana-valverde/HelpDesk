@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "../database/prisma.js";
 import { UserRole } from "../../generated/prisma/enums.js";
 
-import { hash } from "bcrypt";
+import { hash, compare } from "bcrypt";
 import { z } from "zod";
 import { AppError } from "../utils/AppError.js";
 
@@ -101,19 +101,30 @@ class ClientController {
 
   async updatePassword(request: Request, response: Response) {
     const bodySchema = z.object({
-      password: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
+      currentPassword: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
+      newPassword: z.string().min(6, "A senha deve ter no mínimo 6 dígitos"),
     });
 
     const { id } = request.user!;
-    const { password } = bodySchema.parse(request.body);
+    const { currentPassword, newPassword } = bodySchema.parse(request.body);
 
-    const hashedPassword = await hash(password, 10);
+    const user = await prisma.user.findUnique({ where: { id } });
+
+    if (!user || user.role !== UserRole.client) {
+      throw new AppError("Usuário não encontrado", 404);
+    }
+
+    const passwordMatches = await compare(currentPassword, user.password);
+
+    if (!passwordMatches) {
+      throw new AppError("Senha atual incorreta", 400);
+    }
+
+    const hashedPassword = await hash(newPassword, 10);
 
     await prisma.user.update({
       where: { id },
-      data: {
-        password: hashedPassword,
-      },
+      data: { password: hashedPassword },
     });
 
     return response.json({ message: "Senha atualizada com sucesso" });
