@@ -125,6 +125,14 @@ class TicketsController {
       throw new AppError("Chamado não encontrado.", 404);
     }
 
+    const { role, id: userId } = request.user!;
+    if (role === "client" && ticket.clientId !== userId) {
+      throw new AppError("Acesso negado.", 403);
+    }
+    if (role === "expert" && ticket.expertId !== userId) {
+      throw new AppError("Acesso negado.", 403);
+    }
+
     const totalPrice = ticket.services.reduce(
       (sum, service) => sum + Number(service.price),
       0
