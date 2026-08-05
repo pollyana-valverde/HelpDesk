@@ -20,13 +20,12 @@ export function useApiMutation<T = unknown>() {
 
         return response.data;
       } catch (error) {
-        console.log(error);
-
         if (error instanceof AxiosError && error.response?.data.message) {
           setError(error.response.data.message);
         } else {
           setError("Ocorreu um erro ao executar a ação.");
         }
+        throw error;
       } finally {
         setIsLoading(false);
       }

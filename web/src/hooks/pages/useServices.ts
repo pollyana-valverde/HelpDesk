@@ -31,23 +31,33 @@ export function useServices() {
   }
 
   async function toggleServiceStatus(serviceId: string, isActive: boolean) {
-    await mutate(`/services/${serviceId}/update`, "PUT", {
-        isActive: !isActive,
-    });
-    await refetchData();
+    try {
+      await mutate(`/services/${serviceId}/update`, "PUT", { isActive: !isActive });
+      await refetchData();
+    } catch {
+      // erro já está setado no hook
+    }
   }
 
   async function handleCreateService(data: FormData) {
-    await mutate("/services", "POST", data);
-    await refetchData();
-    closeModal();
+    try {
+      await mutate("/services", "POST", data);
+      await refetchData();
+      closeModal();
+    } catch {
+      // erro já está setado no hook
+    }
   }
 
   async function handleUpdateService(data: FormData) {
     if (!serviceToEdit) return;
-    await mutate(`/services/${serviceToEdit.id}/update`, "PUT", data);
-    await refetchData();
-    closeModal();
+    try {
+      await mutate(`/services/${serviceToEdit.id}/update`, "PUT", data);
+      await refetchData();
+      closeModal();
+    } catch {
+      // erro já está setado no hook
+    }
   }
 
   const onSubmit = isEditMode ? handleUpdateService : handleCreateService;

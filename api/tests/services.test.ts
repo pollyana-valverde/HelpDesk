@@ -62,7 +62,7 @@ describe('Services', () => {
         price: 150,
       })
 
-    expect(response.status).toBe(401) // Token inválido, então não autenticado
+    expect(response.status).toBe(403) // Autenticado mas sem permissão (client não pode criar serviço)
   })
 
   it('should list services', async () => {
@@ -89,7 +89,7 @@ describe('Services', () => {
     const serviceId = createResponse.body.id
 
     const response = await request(app)
-      .put(`/services/${serviceId}`)
+      .put(`/services/${serviceId}/update`)
       .set('Authorization', `Bearer ${adminToken}`)
       .send({
         name: 'Updated Service',

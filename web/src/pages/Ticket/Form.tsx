@@ -72,14 +72,13 @@ export function TicketForm() {
       serviceIds: [data.serviceId],
     };
 
-    await mutate("/tickets/new", "POST", payload);
-
-    if (
-      confirm(
-        "Chamado criado com sucesso! Deseja voltar para a página inicial?",
-      )
-    ) {
-      navigate("/");
+    try {
+      await mutate("/tickets/new", "POST", payload);
+      if (confirm("Chamado criado com sucesso! Deseja voltar para a página inicial?")) {
+        navigate("/");
+      }
+    } catch {
+      // erro já está setado no hook
     }
   }
 

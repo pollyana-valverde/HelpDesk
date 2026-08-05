@@ -45,9 +45,7 @@ export function SignIn() {
 
   async function handleSignIn(data: FormData) {
     try {
-       setIsLoading(true);
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setIsLoading(true);
 
       const response = await api.post("/sessions", data);
 
@@ -64,7 +62,9 @@ export function SignIn() {
       }
 
       if (error instanceof AxiosError) {
-        console.log(error?.response?.data.message);
+        return setStateError({
+          message: error?.response?.data?.message ?? "Erro ao fazer login. Tente novamente.",
+        });
       }
 
       return setStateError({

@@ -125,6 +125,14 @@ class TicketsController {
       throw new AppError("Chamado não encontrado.", 404);
     }
 
+    const { role, id: userId } = request.user!;
+    if (role === "client" && ticket.clientId !== userId) {
+      throw new AppError("Acesso negado.", 403);
+    }
+    if (role === "expert" && ticket.expertId !== userId) {
+      throw new AppError("Acesso negado.", 403);
+    }
+
     const totalPrice = ticket.services.reduce(
       (sum, service) => sum + Number(service.price),
       0
@@ -201,6 +209,10 @@ class TicketsController {
       throw new AppError("Chamado não encontrado.", 404);
     }
 
+    if (request.user!.role === "expert" && ticket.expertId !== request.user!.id) {
+      throw new AppError("Acesso negado.", 403);
+    }
+
     if (ticket.status === status) {
       throw new AppError(`Ticket is already '${status}'.`, 400);
     }
@@ -229,6 +241,10 @@ class TicketsController {
 
     if (!ticket) {
       throw new AppError("Chamado não encontrado.", 404);
+    }
+
+    if (request.user!.role === "expert" && ticket.expertId !== request.user!.id) {
+      throw new AppError("Acesso negado.", 403);
     }
 
     if (ticket.status === TicketStatus.closed) {
@@ -306,6 +322,10 @@ class TicketsController {
       throw new AppError("Chamado não encontrado.", 404);
     }
 
+    if (request.user!.role === "expert" && ticket.expertId !== request.user!.id) {
+      throw new AppError("Acesso negado.", 403);
+    }
+
     if (ticket.status === TicketStatus.closed) {
       throw new AppError("Chamados encerrados não podem ser atualizados.", 400);
     }
@@ -325,6 +345,18 @@ class TicketsController {
       throw new AppError(
         "Um ou mais serviços fornecidos não estão associados a este chamado.",
         404
+      );
+    }
+
+    const ticketWithServices = await prisma.ticket.findUnique({
+      where: { id },
+      select: { services: { select: { id: true } } },
+    });
+
+    if ((ticketWithServices?.services.length ?? 0) - serviceIds.length < 1) {
+      throw new AppError(
+        "Um chamado precisa ter ao menos um serviço vinculado.",
+        400
       );
     }
 

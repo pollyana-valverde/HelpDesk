@@ -1,6 +1,7 @@
 import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useApiMutation } from "../../hooks/api";
+import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -21,12 +22,12 @@ type ProfileModalProps = {
   onUserInfoChange: () => void;
 };
 
-const changePasswordSchema = z.object({
+const profileSchema = z.object({
   name: z.string().min(1, "Informe o nome."),
   email: z.email("Email inválido").min(1, "Informe o e-mail"),
 });
 
-type FormData = z.infer<typeof changePasswordSchema>;
+type FormData = z.infer<typeof profileSchema>;
 
 export function ProfileModal({
   isOpen,
@@ -40,33 +41,33 @@ export function ProfileModal({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(changePasswordSchema),
+    resolver: zodResolver(profileSchema),
   });
 
-  async function handleChangePassword(data: FormData) {
-    let response;
-    const endpoint =
-      session?.user.role === "expert"
-        ? "/experts/update-password"
-        : "/clients/update-password";
+  useEffect(() => {
+    if (session?.user) {
+      reset({ name: session.user.name, email: session.user.email });
+    }
+  }, [session, reset]);
 
-    response = await mutate(endpoint, "PATCH", data);
-
-    if (response) {
+  async function handleUpdateProfile(data: FormData) {
+    try {
+      await mutate(`/clients/${session?.user.id}/update`, "PUT", data);
       onUserInfoChange();
+    } catch {
+      // erro já está setado no hook
     }
   }
 
   async function handleDeleteAccount() {
-    const response = await mutate(
-      `/clients/${session?.user.id}/delete`,
-      "DELETE",
-    );
-
-    if (response) {
+    try {
+      await mutate(`/clients/${session?.user.id}/delete`, "DELETE");
       onDeleteAccount();
+    } catch {
+      // erro já está setado no hook
     }
   }
 
@@ -77,7 +78,7 @@ export function ProfileModal({
   return (
     <Modal.Root>
       <Modal.Head onClose={onClose}>Perfil</Modal.Head>
-      <form onSubmit={handleSubmit(handleChangePassword)}>
+      <form onSubmit={handleSubmit(handleUpdateProfile)}>
         <Modal.Body>
           <div className="grid gap-4">
             <div className="flex items-center justify-between gap-4">
@@ -102,7 +103,6 @@ export function ProfileModal({
               {...register("name")}
               hasValidationError={!!errors.name}
               helperText={errors.name?.message}
-              value={session?.user?.name}
             />
 
             <Input
@@ -112,7 +112,6 @@ export function ProfileModal({
               {...register("email")}
               hasValidationError={!!errors.email}
               helperText={errors.email?.message}
-              value={session?.user?.email}
             />
 
             <div className="grid gap-2 relative">

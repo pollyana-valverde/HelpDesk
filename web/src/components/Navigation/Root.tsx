@@ -7,9 +7,11 @@ export function NavigationRoot({ children }: { children: ReactNode }) {
 
   const togglePagesMenu = () => setIsPagesMenuOpen((prev) => !prev);
   const toggleUserMenu = () => setIsUserMenuOpen((prev) => !prev);
+  const closePagesMenu = () => setIsPagesMenuOpen(false);
+  const closeUserMenu = () => setIsUserMenuOpen(false);
   return (
     <NavigationContext.Provider
-      value={{ isPagesMenuOpen, isUserMenuOpen, togglePagesMenu, toggleUserMenu }}
+      value={{ isPagesMenuOpen, isUserMenuOpen, togglePagesMenu, toggleUserMenu, closePagesMenu, closeUserMenu }}
     >
       <div className="w-full relative flex md:flex-col items-center p-6 md:py-5 md:px-4 gap-4 md:gap-2 md:max-w-50 md:items-start ">
         {children}

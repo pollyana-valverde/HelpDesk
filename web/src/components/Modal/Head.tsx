@@ -1,5 +1,6 @@
 import { Button } from "../Button";
 import { X, ArrowLeft } from "lucide-react";
+import { classMerge } from "../../utils/classMerge";
 
 type ModalHeadProps = React.ComponentProps<"div"> & {
   onClose?: () => void;
@@ -16,7 +17,7 @@ export function ModalHead({
   ...rest
 }: ModalHeadProps) {
   return (
-    <div className="flex items-center px-7 py-5 gap-2" {...rest}>
+    <div className={classMerge("flex items-center px-7 py-5 gap-2", className)} {...rest}>
       {goBack && (
         <Button color="link" size="icon" onClick={onGoBack}>
           <ArrowLeft className="w-4.5 h-4.5" />

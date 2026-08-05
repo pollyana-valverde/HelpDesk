@@ -86,28 +86,25 @@ export function ExpertForm() {
   }, [expertData, reset]);
 
   async function createExpert(data: UserData) {
-    await mutate("/experts", "POST", data);
-
-    if (
-      confirm(
-        "Técnico cadastrado com sucesso! Deseja ir para a tela de técnicos?",
-      )
-    ) {
-      navigate("/experts");
+    try {
+      await mutate("/experts", "POST", data);
+      if (confirm("Técnico cadastrado com sucesso! Deseja ir para a tela de técnicos?")) {
+        navigate("/experts");
+      }
+    } catch {
+      // erro já está setado no hook
     }
   }
 
   async function updateExpert(data: UserData) {
-    await mutate(`/experts/${id}/update`, "PUT", data);
-
-    await refetchData();
-
-    if (
-      confirm(
-        "Técnico atualizado com sucesso! Deseja ir para a tela de técnicos?",
-      )
-    ) {
-      navigate("/experts");
+    try {
+      await mutate(`/experts/${id}/update`, "PUT", data);
+      await refetchData();
+      if (confirm("Técnico atualizado com sucesso! Deseja ir para a tela de técnicos?")) {
+        navigate("/experts");
+      }
+    } catch {
+      // erro já está setado no hook
     }
   }
 
