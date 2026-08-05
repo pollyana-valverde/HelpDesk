@@ -1,10 +1,16 @@
 import "dotenv/config";
-import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/prisma/client";
 
-const connectionString = `${process.env.DATABASE_URL}`
+// Em produção na Vercel usa POSTGRES_PRISMA_URL (com PgBouncer);
+// em dev local usa DATABASE_URL do .env.
+const connectionString =
+  process.env.POSTGRES_PRISMA_URL ?? process.env.DATABASE_URL ?? "";
 
-const adapter = new PrismaPg({ connectionString })
-const prisma = new PrismaClient({ adapter })
+// max: 1 porque em serverless o pooling real é feito pelo PgBouncer do provedor.
+const pool = new Pool({ connectionString, max: 1 });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
-export { prisma }
+export { prisma };
