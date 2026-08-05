@@ -23,6 +23,6 @@ export const errorHandling: ErrorRequestHandler = (error, request, response, nex
     console.error(error);
 
     return response.status(500).json({
-        message: error.message,
+        message: "Erro interno do servidor.",
     });
 }
