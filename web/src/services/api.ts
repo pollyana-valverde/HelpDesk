@@ -6,7 +6,7 @@ export type { Method };
 const LOCAL_STORAGE_KEY = "@helpdesk";
 
 const api = axios.create({
-  baseURL: "https://helpdesk-zrh4.onrender.com",
+  baseURL: "https://help-desk-rho-one.vercel.app/",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
