@@ -45,9 +45,7 @@ export function SignIn() {
 
   async function handleSignIn(data: FormData) {
     try {
-       setIsLoading(true);
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setIsLoading(true);
 
       const response = await api.post("/sessions", data);
 

@@ -15,8 +15,6 @@ export function useApiQuery<T = unknown>(
       setIsLoading(true);
       setError(null); // Limpa erros anteriores
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
       const response = await api.get<T>(endpoint);
 
       if (dataSelector) {
