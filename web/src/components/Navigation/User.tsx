@@ -1,7 +1,7 @@
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigation } from "../../hooks/useNavigation";
 
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { ProfileIcon } from "../ProfileIcon";
 import { LogOut, CircleUser } from "lucide-react";
 import { Menu } from "../Menu/Index";

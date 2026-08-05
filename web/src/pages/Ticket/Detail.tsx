@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useApiMutation, useApiQuery } from "../../hooks/api/";
 import { useAuth } from "../../hooks/useAuth";
 import { useServices } from "../../hooks/pages/useServices";
