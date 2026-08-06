@@ -1,15 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import request from 'supertest'
-import { app } from '../src/app'
-import { prisma } from '../src/database/prisma'
+import { app } from '../../src/app'
+import { prisma } from '../../src/database/prisma'
 import { hash } from 'bcrypt'
-import { generateUniqueEmail } from './helpers'
+import { generateUniqueEmail } from '../helpers'
 
 describe('Sessions', () => {
   let user: any
 
   beforeEach(async () => {
-    // Criar um usuário de teste
     const hashedPassword = await hash('password123', 8)
     user = await prisma.user.create({
       data: {

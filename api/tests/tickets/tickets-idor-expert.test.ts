@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import request from 'supertest'
-import { app } from '../src/app'
-import { prisma } from '../src/database/prisma'
+import { app } from '../../src/app'
+import { prisma } from '../../src/database/prisma'
 import { hash } from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { authConfig } from '../src/configs/auth'
-import { generateUniqueEmail } from './helpers'
+import { authConfig } from '../../src/configs/auth'
+import { generateUniqueEmail } from '../helpers'
 
 describe('Tickets IDOR - ações de expert em tickets de outros', () => {
   let assignedExpertToken: string
@@ -89,7 +89,6 @@ describe('Tickets IDOR - ações de expert em tickets de outros', () => {
   })
 
   it('expert atribuído pode remover serviços (quando restam outros)', async () => {
-    // primeiro adiciona o service2 para poder remover o service1 sem zerar
     await request(app)
       .patch(`/tickets/${ticketId}/add-services`)
       .set('Authorization', `Bearer ${assignedExpertToken}`)

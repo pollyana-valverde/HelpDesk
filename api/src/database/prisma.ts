@@ -8,8 +8,9 @@ import { PrismaClient } from "../../generated/prisma/client";
 const connectionString =
   process.env.POSTGRES_PRISMA_URL ?? process.env.DATABASE_URL ?? "";
 
-// max: 1 porque em serverless o pooling real é feito pelo PgBouncer do provedor.
-const pool = new Pool({ connectionString, max: 1 });
+// Em serverless (Vercel) mantemos max:1 porque o PgBouncer do provedor faz o pool real.
+// Em dev/testes usamos max:10 para evitar contenção com múltiplas queries paralelas.
+const pool = new Pool({ connectionString, max: process.env.VERCEL ? 1 : 10 });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 

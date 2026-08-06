@@ -21,13 +21,13 @@ class SessionController {
     });
 
     if (!user) {
-      throw new AppError("Email ou senha inválidos", 404);
+      throw new AppError("Email ou senha inválidos", 401);
     }
 
     const passwordMatches = await compare(password, user.password);
 
     if (!passwordMatches) {
-      throw new AppError("Email ou senha inválidos", 404);
+      throw new AppError("Email ou senha inválidos", 401);
     }
 
     const { secret, expiresIn } = authConfig.jwt;
