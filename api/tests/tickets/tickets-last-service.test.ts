@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import request from 'supertest'
-import { app } from '../src/app'
-import { prisma } from '../src/database/prisma'
+import { app } from '../../src/app'
+import { prisma } from '../../src/database/prisma'
 import { hash } from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { authConfig } from '../src/configs/auth'
-import { generateUniqueEmail } from './helpers'
+import { authConfig } from '../../src/configs/auth'
+import { generateUniqueEmail } from '../helpers'
 
 describe('Tickets - impede remover último serviço', () => {
   let expertToken: string

@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import request from 'supertest'
-import { app } from '../src/app'
-import { prisma } from '../src/database/prisma'
+import { app } from '../../src/app'
+import { prisma } from '../../src/database/prisma'
 import { hash } from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
-import { authConfig } from '../src/configs/auth'
-import { generateUniqueEmail } from './helpers'
+import { authConfig } from '../../src/configs/auth'
+import { generateUniqueEmail } from '../helpers'
 
 describe('Tickets', () => {
   let clientToken: string
@@ -80,6 +80,24 @@ describe('Tickets', () => {
     expect(response.body.services).toHaveLength(1)
   })
 
+  it('should reject ticket with inactive service', async () => {
+    const inactiveService = await prisma.service.create({
+      data: { name: 'Inactive Service', price: 50, isActive: false },
+    })
+
+    const response = await request(app)
+      .post('/tickets/new')
+      .set('Authorization', `Bearer ${clientToken}`)
+      .send({
+        title: 'Inactive Service Ticket',
+        description: 'Tentativa com serviço inativo',
+        serviceIds: [inactiveService.id],
+      })
+
+    expect(response.status).toBe(400)
+    expect(response.body.message).toContain('inativo')
+  })
+
   it('should list tickets as admin', async () => {
     const response = await request(app)
       .get('/tickets')
@@ -114,7 +132,6 @@ describe('Tickets', () => {
   })
 
   it('should show client tickets', async () => {
-    // cria um ticket para que o endpoint não retorne 404
     await request(app)
       .post('/tickets/new')
       .set('Authorization', `Bearer ${clientToken}`)

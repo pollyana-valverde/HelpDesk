@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import request from 'supertest'
-import { app } from '../src/app'
-import { prisma } from '../src/database/prisma'
+import { app } from '../../src/app'
+import { prisma } from '../../src/database/prisma'
 import { hash } from 'bcrypt'
-import { authenticateUser, generateUniqueEmail } from './helpers'
+import jwt from 'jsonwebtoken'
+import { authConfig } from '../../src/configs/auth'
+import { authenticateUser, generateUniqueEmail } from '../helpers'
 
-describe('Users', () => {
+describe('Clients', () => {
   let adminToken: string
 
   beforeEach(async () => {
@@ -37,33 +39,9 @@ describe('Users', () => {
     expect(response.body.message).toBe('Usuário criado com sucesso')
   })
 
-  it('should create an expert', async () => {
-    const response = await request(app)
-      .post('/experts')
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({
-        name: 'New Expert',
-        email: generateUniqueEmail('newexpert'),
-        password: 'password123',
-        availableHours: ['09:00-17:00'],
-      })
-
-    expect(response.status).toBe(201)
-    expect(response.body.message).toBe('Técnico criado com sucesso')
-  })
-
   it('should list clients', async () => {
     const response = await request(app)
       .get('/clients')
-      .set('Authorization', `Bearer ${adminToken}`)
-
-    expect(response.status).toBe(200)
-    expect(Array.isArray(response.body)).toBe(true)
-  })
-
-  it('should list experts', async () => {
-    const response = await request(app)
-      .get('/experts')
       .set('Authorization', `Bearer ${adminToken}`)
 
     expect(response.status).toBe(200)
@@ -84,34 +62,10 @@ describe('Users', () => {
     const response = await request(app)
       .put(`/clients/${client.id}/update`)
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({
-        name: 'Updated Client',
-      })
+      .send({ name: 'Updated Client' })
 
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Usuário atualizado com sucesso')
-  })
-
-  it('should update an expert', async () => {
-    const expert = await prisma.user.create({
-      data: {
-        name: 'Update Expert',
-        email: generateUniqueEmail('updateexpert'),
-        password: await hash('password123', 8),
-        role: 'expert',
-        availableHours: ['09:00-17:00'],
-      },
-    })
-
-    const response = await request(app)
-      .put(`/experts/${expert.id}/update`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({
-        name: 'Updated Expert',
-      })
-
-    expect(response.status).toBe(200)
-    expect(response.body.message).toBe('Técnico atualizado com sucesso')
   })
 
   it('should delete a client', async () => {
@@ -131,5 +85,63 @@ describe('Users', () => {
 
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('Usuário deletado com sucesso')
+  })
+
+  describe('PATCH /clients/update-password', () => {
+    let clientToken: string
+
+    beforeEach(async () => {
+      const hashedPassword = await hash('senha123', 8)
+      const secret = String(authConfig.jwt.secret)
+
+      const client = await prisma.user.create({
+        data: {
+          name: 'Test Client',
+          email: generateUniqueEmail('client'),
+          password: hashedPassword,
+          role: 'client',
+          availableHours: [],
+        },
+      })
+
+      clientToken = jwt.sign({ role: 'client' }, secret, { subject: client.id })
+    })
+
+    it('deve trocar a senha quando a senha atual está correta', async () => {
+      const res = await request(app)
+        .patch('/clients/update-password')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({ currentPassword: 'senha123', newPassword: 'novaSenha456' })
+
+      expect(res.status).toBe(200)
+      expect(res.body.message).toBe('Senha atualizada com sucesso')
+    })
+
+    it('deve rejeitar quando a senha atual está errada', async () => {
+      const res = await request(app)
+        .patch('/clients/update-password')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({ currentPassword: 'senhaErrada', newPassword: 'novaSenha456' })
+
+      expect(res.status).toBe(400)
+    })
+
+    it('deve rejeitar quando currentPassword está ausente', async () => {
+      const res = await request(app)
+        .patch('/clients/update-password')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({ newPassword: 'novaSenha456' })
+
+      expect(res.status).toBe(400)
+    })
+
+    it('deve rejeitar quando newPassword está ausente', async () => {
+      const res = await request(app)
+        .patch('/clients/update-password')
+        .set('Authorization', `Bearer ${clientToken}`)
+        .send({ currentPassword: 'senha123' })
+
+      expect(res.status).toBe(400)
+    })
   })
 })
