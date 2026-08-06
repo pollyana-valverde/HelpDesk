@@ -161,7 +161,7 @@ class ExpertController {
     const passwordMatches = await compare(currentPassword, expert.password);
 
     if (!passwordMatches) {
-      throw new AppError("Senha atual incorreta", 404);
+      throw new AppError("Senha atual incorreta", 400);
     }
 
     const hashedPassword = await hash(newPassword, 10);
