@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../database/prisma.js";
-import { TicketStatus, UserRole } from "../../generated/prisma/enums.js";
+import { TicketStatus, UserRole } from "@prisma/client";
 
 import { z } from "zod";
 import { AppError } from "../utils/AppError.js";

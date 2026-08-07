@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../../generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 // Em produção na Vercel usa POSTGRES_PRISMA_URL (com PgBouncer);
 // em dev local usa DATABASE_URL do .env.

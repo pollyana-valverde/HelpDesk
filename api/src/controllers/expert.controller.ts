@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../database/prisma.js";
-import { UserRole } from "../../generated/prisma/enums.js";
+import { UserRole } from "@prisma/client";
 
 import { hash, compare } from "bcrypt";
 import { z } from "zod";
