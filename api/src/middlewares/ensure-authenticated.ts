@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-import { authConfig } from "../configs/auth";
-import { AppError } from "../utils/AppError";
+import { authConfig } from "../configs/auth.js";
+import { AppError } from "../utils/AppError.js";
 
 interface TokenPayload {
   role: string;
@@ -38,7 +38,7 @@ function ensureAuthenticated(
     return next();
   } catch (error) {
     console.log(error);
-    
+
     throw new AppError("Token inválido ou expirado", 401);
   }
 }

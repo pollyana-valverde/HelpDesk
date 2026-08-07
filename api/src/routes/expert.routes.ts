@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { ExpertController } from "../controllers/expert.controller";
-import { verifyAuthorization } from "../middlewares/verify-authorization";
+import { ExpertController } from "../controllers/expert.controller.js";
+import { verifyAuthorization } from "../middlewares/verify-authorization.js";
 
 const expertRoutes = Router();
 const expertController = new ExpertController();

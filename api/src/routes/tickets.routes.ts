@@ -1,7 +1,7 @@
 import { Router } from "express";
 
-import { TicketsController } from "../controllers/tickets.controller";
-import { verifyAuthorization } from "../middlewares/verify-authorization";
+import { TicketsController } from "../controllers/tickets.controller.js";
+import { verifyAuthorization } from "../middlewares/verify-authorization.js";
 
 const ticketsRoutes = Router();
 const ticketsController = new TicketsController();
